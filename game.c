@@ -37,7 +37,7 @@ int main (){
     
     deci = (int *)(malloc(sizeof(int)));
     while (deci!=1){
-        printf("para o começo de nossa jornada, defina seu estilo de combate: \n");
+        printf("\nPara o inicio de nossa jornada, defina seu estilo de combate: \n");
         printf("1 - Combatente \n");
         printf("2 - Ocultista \n");
         
@@ -46,8 +46,9 @@ int main (){
 
         if (*opicao == 1){
             system("cls");
-            printf("Combatentes sao uma classe focada em forca fisica e combate corpo a corpo \nno entanto nao possuem tanto poder vindo 'do outro lado', deseja selecionar essa classe?");
+            printf("Combatentes sao uma classe focada em forca fisica e combate corpo a corpo \nno entanto nao possuem tanto poder vindo 'do outro lado', deseja selecionar essa classe? \n \n ");
             printf("Item exclusivo: Katana \n");
+            printf("1 - confirmar classe \n2 - voltar\n \n");
             scanf("%d", opicao);
             if(*opicao == 1){
                 agente.agenteAtri.des = 3;
@@ -62,8 +63,9 @@ int main (){
             
         } else if (*opicao == 2){
             system("cls");
-            printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe?");
+            printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe? \n \n");
             printf("Item exclusivo: Grimorio \n");
+            printf("1 - confirmar classe \n2 - voltar\n \n");
             scanf("%d", opicao);
             if(*opicao == 1){
                 agente.agenteAtri.des = 2;
