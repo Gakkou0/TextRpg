@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-struct atributosBase {
+struct baseAttribures {
     int des;
     int stg;
     int con;
@@ -13,30 +13,25 @@ struct atributosBase {
 };
 
 struct player {
-    struct atributosBase agenteAtri;
+    struct baseAttribures agenteAtri;
     int exp;
     int sp;
-    char nome[20];
+    char name[20];
     int coin;
 
 }agente;
 
-void telaAgente() {
-    system("cls");
-    printf("Agente: %s \n", agente.nome);
-    printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
-    printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pow * 7);
-    printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
-}
+void AgenteStatus();
+movimentoAtaque(int atriAtacante, int vidaAlvo, int dadoAtaque);
 
 int main (){
     system("cls");
     int *opicao, *deci;
     printf("Qual o seu nome agente? \n");
-    gets(agente.nome);
+    gets(agente.name);
     
     deci = (int *)(malloc(sizeof(int)));
-    while (deci!=1){
+    while (*deci!=1){
         printf("\nPara o inicio de nossa jornada, defina seu estilo de combate: \n");
         printf("1 - Combatente \n");
         printf("2 - Ocultista \n");
@@ -58,7 +53,8 @@ int main (){
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
                 agente.sp = agente.agenteAtri.pow * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
-                deci = 1;
+                agente.coin=2000;
+                *deci = 1;
             }
             
         } else if (*opicao == 2){
@@ -75,17 +71,64 @@ int main (){
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
                 agente.sp = agente.agenteAtri.pow * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
-                deci = 1;
+                agente.coin=2000;
+                *deci = 1;
             }
         } else {
             printf("Essa classe não existe ainda!\n");
         }
     }
 
-    telaAgente();
+    movimentoAtaque(10, agente.agenteAtri.lp, 4);
+    AgenteStatus();
 
     free(deci);
     free(opicao);
 
     return 0;
+}
+
+void AgenteStatus() {
+    //system("cls");
+    printf("Agente: %s \n", agente.name);
+    printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
+    printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pow * 7);
+    printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+}
+
+movimentoAtaque(int atriAtacante, int vidaAlvo, int dadoAtaque) {
+    
+    srand(time(NULL));
+    int numDados = atriAtacante/2 + atriAtacante%2, i = 0;
+    int dado, maiorDado = 0, dt = 20 - (numDados * 5), dano = 0; 
+
+    for (i=0; i<numDados; i++){
+        dado = (rand()%20)+1;
+        if (i==0){
+            maiorDado = dado;
+        }
+        if (dado > maiorDado){
+            maiorDado = dado;
+        }
+    }
+
+    if (maiorDado >= dt) {
+        if (maiorDado == 20){
+            dano = 2 * dadoAtaque;
+            printf("Você acertou em cheio! \n");
+            printf("dano causado: %d \n", dano);
+            vidaAlvo -= dano;
+        }else{
+            for (i=0; i<numDados; i++){
+                dano += (rand()%dadoAtaque)+1;
+            }
+            printf("Você acertou! \n");
+            printf("dano causado: %d \n", dano);
+            vidaAlvo -= dano;
+        }
+        
+    }else{
+        printf("Você errou! \n");
+    }
+
 }
