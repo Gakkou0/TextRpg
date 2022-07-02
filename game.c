@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define DMC 10
+#include <conio.h>
+#include <locale.h>
 
 struct baseAttribures {
     int des;
@@ -27,6 +28,7 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque);
 void escolhaMenu(int n, int m, char lista[][m]);
 
 int main (){
+    setlocale(LC_ALL, "Portuguese");
     system("cls");
     int *opicao, *deci;
     printf("Qual o seu nome agente? \n");
@@ -34,7 +36,7 @@ int main (){
     
     deci = (int *)(malloc(sizeof(int)));
     while (*deci!=1){
-        printf("\nPara o inicio de nossa jornada, defina seu estilo de combate: \n");
+        printf("\nPara o inicio de nossa jornada, defina seu estilo de combaté: \n");
         printf("1 - Combatente \n");
         printf("2 - Ocultista \n");
         
@@ -81,8 +83,8 @@ int main (){
         }
     }
 
-    char lista [20][2] = {{"ocultista"},{"combatente"}};
-    escolhaMenu(20, 2, lista);
+    char lista [2][20] = {{"ocultista"},{"combatente"}};
+    escolhaMenu(2, 20, lista);
 
     free(deci);
     free(opicao);
@@ -137,27 +139,25 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
 }
 
 void escolhaMenu(int n, int m, char lista[][m]){
-    int i, j, deci = 0, selecao = 0;
+    int i, deci = 0, selecao = 0;
     int c;
-    system("cls");
     while (deci != 1){
+        system("cls");
         for (i=0; i<n; i++){
-            for (j=0; j<m; j++){
-                if (selecao == j){
-                    printf("-> %s <- \n", lista[i][j]);
+                if (selecao == i){
+                    printf("-> %s <- \n", lista[i]);
                 } else {
-                    printf("%s \n", lista[i][j]);
+                    printf("%s \n", lista[i]);
                 }
             } 
-        }
         c = getch();
         if (c == 119){
-            if (selecao!=0){
-                selecao++;
+            if (selecao>0){
+                selecao--;
             }
         } else if (c == 115){
-            if (selecao!=j){
-                selecao--;
+            if (selecao<n){
+                selecao++;
             }
         }
     }
