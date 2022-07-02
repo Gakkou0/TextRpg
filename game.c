@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#define DMC 10
 
 struct baseAttribures {
     int des;
@@ -22,7 +23,8 @@ struct player {
 }agente;
 
 void AgenteStatus();
-movimentoAtaque(int atriAtacante, int vidaAlvo, int dadoAtaque);
+int movimentoAtaque(int atriAtacante, int dadoAtaque);
+void escolhaMenu(int n, int m, char lista[][m]);
 
 int main (){
     system("cls");
@@ -79,8 +81,8 @@ int main (){
         }
     }
 
-    movimentoAtaque(10, agente.agenteAtri.lp, 4);
-    AgenteStatus();
+    char lista [20][2] = {{"ocultista"},{"combatente"}};
+    escolhaMenu(20, 2, lista);
 
     free(deci);
     free(opicao);
@@ -96,7 +98,7 @@ void AgenteStatus() {
     printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
 }
 
-movimentoAtaque(int atriAtacante, int vidaAlvo, int dadoAtaque) {
+int movimentoAtaque(int atriAtacante, int dadoAtaque) {
     
     srand(time(NULL));
     int numDados = atriAtacante/2 + atriAtacante%2, i = 0;
@@ -117,18 +119,46 @@ movimentoAtaque(int atriAtacante, int vidaAlvo, int dadoAtaque) {
             dano = 2 * dadoAtaque;
             printf("Você acertou em cheio! \n");
             printf("dano causado: %d \n", dano);
-            vidaAlvo -= dano;
+            return dano;
         }else{
             for (i=0; i<numDados; i++){
                 dano += (rand()%dadoAtaque)+1;
             }
             printf("Você acertou! \n");
             printf("dano causado: %d \n", dano);
-            vidaAlvo -= dano;
+            return dano;
         }
         
     }else{
         printf("Você errou! \n");
+        return 0;
     }
 
+}
+
+void escolhaMenu(int n, int m, char lista[][m]){
+    int i, j, deci = 0, selecao = 0;
+    int c;
+    system("cls");
+    while (deci != 1){
+        for (i=0; i<n; i++){
+            for (j=0; j<m; j++){
+                if (selecao == j){
+                    printf("-> %s <- \n", lista[i][j]);
+                } else {
+                    printf("%s \n", lista[i][j]);
+                }
+            } 
+        }
+        c = getch();
+        if (c == 119){
+            if (selecao!=0){
+                selecao++;
+            }
+        } else if (c == 115){
+            if (selecao!=j){
+                selecao--;
+            }
+        }
+    }
 }
