@@ -8,7 +8,7 @@ struct baseAttribures {
     int des;
     int stg;
     int con;
-    int pow;
+    int pod;
     int lvl;
     int lp;
     int ep;
@@ -53,9 +53,9 @@ int main (){
                 agente.agenteAtri.des = 3;
                 agente.agenteAtri.stg = 4;
                 agente.agenteAtri.con = 4;
-                agente.agenteAtri.pow = 1;
+                agente.agenteAtri.pod = 1;
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
-                agente.sp = agente.agenteAtri.pow * 7;
+                agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
                 *deci = 1;
@@ -71,9 +71,9 @@ int main (){
                 agente.agenteAtri.des = 2;
                 agente.agenteAtri.stg = 1;
                 agente.agenteAtri.con = 3;
-                agente.agenteAtri.pow = 5;
+                agente.agenteAtri.pod = 5;
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
-                agente.sp = agente.agenteAtri.pow * 7;
+                agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
                 *deci = 1;
@@ -96,7 +96,7 @@ void AgenteStatus() {
     //system("cls");
     printf("Agente: %s \n", agente.name);
     printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
-    printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pow * 7);
+    printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pod * 7);
     printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
 }
 
