@@ -34,84 +34,31 @@ void agenteStatus();
 int movimentoAtaque(int atriAtacante, int dadoAtaque);
 void localdaseta(int realPosition, int posicaoDaTecla);
 void eventoBatalha();
+void mainMenu();
+void firstOpen();
+int confirmOption(int ph);
+void firstMenu();
 
 int main (){
-    setlocale(LC_ALL, "Portuguese");
+    setlocale( LC_ALL, "" );
     system("cls");
-    int *opicao, *deci;
-    printf("Qual o seu nome agente? \n");
-    gets(agente.name);
-    
-    deci = (int *)(malloc(sizeof(int)));
-    while (*deci!=1){
-        printf("\nPara o inicio de nossa jornada, defina seu estilo de combaté: \n");
-        printf("1 - Combatente \n");
-        printf("2 - Ocultista \n");
-        
-        opicao = (int *)(malloc(sizeof(int)));
-        scanf("%d", opicao);
 
-        if (*opicao == 1){
-            system("cls");
-            printf("Combatentes sao uma classe focada em forca fisica e combate corpo a corpo \nno entanto nao possuem tanto poder vindo 'do outro lado', deseja selecionar essa classe? \n \n ");
-            printf("Item exclusivo: Katana \n");
-            printf("1 - confirmar classe \n2 - voltar\n \n");
-            scanf("%d", opicao);
-            if(*opicao == 1){
-                agente.agenteAtri.lvl = 1;
-                agente.exp = 0;
-                agente.agenteAtri.des = 3;
-                agente.agenteAtri.stg = 4;
-                agente.agenteAtri.con = 4;
-                agente.agenteAtri.pod = 1;
-                agente.agenteAtri.lp = agente.agenteAtri.con * 5;
-                agente.sp = agente.agenteAtri.pod * 7;
-                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
-                agente.coin=2000;
-                *deci = 1;
-            }
-            
-        } else if (*opicao == 2){
-            system("cls");
-            printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe? \n \n");
-            printf("Item exclusivo: Grimorio \n");
-            printf("1 - confirmar classe \n2 - voltar\n \n");
-            scanf("%d", opicao);
-            if(*opicao == 1){
-                agente.agenteAtri.lvl = 1;
-                agente.exp = 0;
-                agente.agenteAtri.des = 2;
-                agente.agenteAtri.stg = 1;
-                agente.agenteAtri.con = 3;
-                agente.agenteAtri.pod = 5;
-                agente.agenteAtri.lp = agente.agenteAtri.con * 5;
-                agente.sp = agente.agenteAtri.pod * 7;
-                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
-                agente.coin=2000;
-                *deci = 1;
-            }
-        } else {
-            printf("Essa classe não existe ainda!\n");
-        }
-    }
+    firstMenu();
 
-
-
-
-    eventoBatalha();
-
-    free(deci);
-    free(opicao);
+    mainMenu();
 
     return 0;
 }
 
 void agenteStatus() {
-    //system("cls");
+    system("cls");
     printf("Agente: %s \n", agente.name);
     printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
     printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pod * 7);
     printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+    printf("Dinheiro: %d \n", agente.coin);
+    printf("XP: %d / %d \n", agente.exp, agente.agenteAtri.lvl * 1000);
+    system("pause");
 }
 
 int movimentoAtaque(int atriAtacante, int dadoAtaque) {
@@ -244,6 +191,201 @@ void eventoBatalha(){
                     printf("Voce tenta escapar, tentativa falha \n\n");
                     system("pause");
                 }
+                break;
+            }
+        }
+
+        if (monster.monsterAtri.lp<=0){
+            agente.coin += monster.coinReward;
+            agente.exp += monster.xpReward;
+
+            printf("FIM DE COMBATE \n");
+            printf("Recompensas: \n \n");
+            printf("xp: +%d \n", monster.xpReward);
+            printf("dinheiro: +%d \n", monster.coinReward);
+
+            system("pause");
+            combatEvent = 1;
+        }
+    }
+}
+
+void mainMenu(){
+    int localReal = 1, mainMenu = 0;
+    while(mainMenu == 0){
+        system("cls");
+        printf("MENU PRINCIPAL \n \n"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("TESTE COMBATE\n");
+        localdaseta(2, localReal);printf("STATUS\n");
+        localdaseta(3, localReal);printf("ITENS\n");
+        localdaseta(4, localReal);printf("SALVAR\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 4) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                eventoBatalha();
+                break;
+                case 2:
+                agenteStatus();
+                break;
+                case 3:
+                break;
+                case 4:
+                break;
+            }
+        }
+    }
+}
+
+int confirmOption(int ph){
+    int localReal = 1, opcao = ph;
+    while(opcao == 0){
+
+        system("cls");
+        localdaseta(1, localReal);printf("confirmar\n");
+        localdaseta(2, localReal);printf("voltar\n");
+
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 2) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                opcao=1;
+                return 1;
+                break;
+                case 2:
+                opcao=1;
+                return 2;
+                break;
+            }
+        }
+    }
+
+}
+
+void firstOpen() {
+    int deci = 0, localReal = 1;
+
+    system("cls");
+    printf("Seja Bem vindo Agente, por favor informe como deseja ser chamado: \n");
+    printf("Agente: ");
+    gets(agente.name);
+
+    while (deci==0){
+        system("cls");
+        printf("\nPara o inicio de nossa jornada, defina seu estilo de combate: \n");
+        localdaseta(1, localReal);printf("Combatente \n");
+        localdaseta(2, localReal);printf("Ocultista \n");
+
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 2) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                system("cls");
+                printf("Combatentes sao uma classe focada em forca fisica e combate corpo a corpo \nno entanto nao possuem tanto poder vindo 'do outro lado', deseja selecionar essa classe? \n \n ");
+                printf("Item exclusivo: Katana \n");
+                system("pause");
+                if (confirmOption(0)==1){
+                agente.agenteAtri.lvl = 1;
+                agente.exp = 0;
+                agente.agenteAtri.des = 3;
+                agente.agenteAtri.stg = 4;
+                agente.agenteAtri.con = 4;
+                agente.agenteAtri.pod = 1;
+                agente.agenteAtri.lp = agente.agenteAtri.con * 5;
+                agente.sp = agente.agenteAtri.pod * 7;
+                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
+                agente.coin=2000;
+                deci = 1;    
+                }
+                break;
+                case 2:
+                system("cls");
+                printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe? \n \n");
+                printf("Item exclusivo: Grimorio \n");
+                system("pause");
+                if (confirmOption(0)==1){
+                agente.agenteAtri.lvl = 1;
+                agente.exp = 0;
+                agente.agenteAtri.des = 2;
+                agente.agenteAtri.stg = 1;
+                agente.agenteAtri.con = 3;
+                agente.agenteAtri.pod = 5;
+                agente.agenteAtri.lp = agente.agenteAtri.con * 5;
+                agente.sp = agente.agenteAtri.pod * 7;
+                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
+                agente.coin=2000;
+                deci = 1;  
+                }
+                
+                break;
+            }   
+        }
+    }
+}
+
+void firstMenu() {
+    int localReal = 1, mainMenu = 0;
+    while(mainMenu == 0){
+        system("cls");
+        printf("RPG *coloque o nome aqui* \n \n"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("NOVO JOGO\n");
+        localdaseta(2, localReal);printf("CARREGAR\n");
+        localdaseta(3, localReal);printf("CREDITOS\n");
+        localdaseta(4, localReal);printf("SAIR\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 4) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                firstOpen();
+                mainMenu = 1;
+                break;
+                case 2:
+                break;
+                case 3:
+                break;
+                case 4:
                 break;
             }
         }
