@@ -23,9 +23,10 @@ struct player {
 
 }agente;
 
-void AgenteStatus();
+void agenteStatus();
 int movimentoAtaque(int atriAtacante, int dadoAtaque);
-void escolhaMenu(int n, int m, char lista[][m]);
+void localdaseta(int realPosition, int posicaoDaTecla);
+void eventoBatalha();
 
 int main (){
     setlocale(LC_ALL, "Portuguese");
@@ -83,8 +84,7 @@ int main (){
         }
     }
 
-    char lista [2][20] = {{"ocultista"},{"combatente"}};
-    escolhaMenu(2, 20, lista);
+    eventoBatalha();
 
     free(deci);
     free(opicao);
@@ -92,7 +92,7 @@ int main (){
     return 0;
 }
 
-void AgenteStatus() {
+void agenteStatus() {
     //system("cls");
     printf("Agente: %s \n", agente.name);
     printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
@@ -138,27 +138,15 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
 
 }
 
-void escolhaMenu(int n, int m, char lista[][m]){
-    int i, deci = 0, selecao = 0;
-    int c;
-    while (deci != 1){
-        system("cls");
-        for (i=0; i<n; i++){
-                if (selecao == i){
-                    printf("-> %s <- \n", lista[i]);
-                } else {
-                    printf("%s \n", lista[i]);
-                }
-            } 
-        c = getch();
-        if (c == 119){
-            if (selecao>0){
-                selecao--;
-            }
-        } else if (c == 115){
-            if (selecao<n){
-                selecao++;
-            }
-        }
+void localdaseta(int realPosition, int posicaoDaTecla) {
+    if (realPosition == posicaoDaTecla) {
+        printf("\t\t\t=> ");
     }
+    else {
+        printf("\t\t\t   ");
+    }
+}
+
+void eventoBatalha(){
+    
 }
