@@ -23,6 +23,13 @@ struct player {
 
 }agente;
 
+struct monster {
+    struct baseAttribures monsterAtri;
+    char name[20];
+    int coinReward;
+    int xpReward;
+}monster;
+
 void agenteStatus();
 int movimentoAtaque(int atriAtacante, int dadoAtaque);
 void localdaseta(int realPosition, int posicaoDaTecla);
@@ -51,6 +58,8 @@ int main (){
             printf("1 - confirmar classe \n2 - voltar\n \n");
             scanf("%d", opicao);
             if(*opicao == 1){
+                agente.agenteAtri.lvl = 1;
+                agente.exp = 0;
                 agente.agenteAtri.des = 3;
                 agente.agenteAtri.stg = 4;
                 agente.agenteAtri.con = 4;
@@ -69,6 +78,8 @@ int main (){
             printf("1 - confirmar classe \n2 - voltar\n \n");
             scanf("%d", opicao);
             if(*opicao == 1){
+                agente.agenteAtri.lvl = 1;
+                agente.exp = 0;
                 agente.agenteAtri.des = 2;
                 agente.agenteAtri.stg = 1;
                 agente.agenteAtri.con = 3;
@@ -83,6 +94,9 @@ int main (){
             printf("Essa classe não existe ainda!\n");
         }
     }
+
+
+
 
     eventoBatalha();
 
@@ -121,6 +135,7 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
             dano = 2 * dadoAtaque;
             printf("Você acertou em cheio! \n");
             printf("dano causado: %d \n", dano);
+            system("pause");
             return dano;
         }else{
             for (i=0; i<numDados; i++){
@@ -128,11 +143,13 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
             }
             printf("Você acertou! \n");
             printf("dano causado: %d \n", dano);
+            system("pause");
             return dano;
         }
         
     }else{
         printf("Você errou! \n");
+        system("pause");
         return 0;
     }
 
@@ -140,13 +157,95 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
 
 void localdaseta(int realPosition, int posicaoDaTecla) {
     if (realPosition == posicaoDaTecla) {
-        printf("\t\t\t=> ");
+        printf("\t=> ");
     }
     else {
-        printf("\t\t\t   ");
+        printf("\t   ");
     }
 }
 
 void eventoBatalha(){
+    srand(time(NULL));
+    int randMonster = rand () % 2;
+    int tryEscape;
+    system("cls");
+    switch(randMonster) {
+        case 0:
+        strcpy(monster.name, "Existido de energia");
+        monster.monsterAtri.lvl = (rand() % 5) + 1;
+        monster.monsterAtri.des = 3;
+        monster.monsterAtri.stg = 2;
+        monster.monsterAtri.con = 3 + monster.monsterAtri.lvl;
+        monster.monsterAtri.pod = 5 + monster.monsterAtri.lvl;
+        monster.monsterAtri.lp = monster.monsterAtri.con * 5;
+        monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
+        monster.monsterAtri.ep = monster.monsterAtri.des * 5;
+        monster.coinReward = rand() % (200 - 100) + 200;
+
+        printf("Voce se depara com um ser que incandesce uma luz azulada que parece flutuar em pleno ar, em sua face, uma expressão de puro desespero \n\n");
+        system("pause");
+        break;
+        case 1:
+        strcpy(monster.name, "Blood Zombie");
+        monster.monsterAtri.lvl = (rand() % 5) + 1;
+        monster.monsterAtri.des = 3;
+        monster.monsterAtri.stg = 5 + monster.monsterAtri.lvl;
+        monster.monsterAtri.con = 4 + monster.monsterAtri.lvl;
+        monster.monsterAtri.pod = 1;
+        monster.monsterAtri.lp = monster.monsterAtri.con * 5;
+        monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
+        monster.monsterAtri.ep = monster.monsterAtri.des * 5;
+        monster.coinReward = rand() % (200 - 100) + 200;
+        printf("Voce se depara com um ser bestial completamente enfurecido, toda sua pele parece estar em carne viva \n\n");
+        system("pause");
+
+    }
     
+    int localReal = 1, combatEvent = 0;
+    while(combatEvent == 0){
+        system("cls");
+        printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
+        printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5, monster.monsterAtri.lp, monster.monsterAtri.con * 5);
+        printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
+        printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("COMBATE\n");
+        localdaseta(2, localReal);printf("RITUAIS\n");
+        localdaseta(3, localReal);printf("ITENS\n");
+        localdaseta(4, localReal);printf("FUGA\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 4) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                monster.monsterAtri.lp -= movimentoAtaque(agente.agenteAtri.stg, 6);
+                break;
+                case 2:
+                break;
+                case 3:
+                break;
+                case 4:
+                tryEscape = rand() % 2;
+                if (tryEscape == 1) {
+                    printf("Voce escapou, fim de combate \n\n");
+                    system("pause");
+                    combatEvent = 1;
+                } else {
+                    printf("Voce tenta escapar, tentativa falha \n\n");
+                    system("pause");
+                }
+                break;
+            }
+        }
+    }
 }
