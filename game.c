@@ -3,6 +3,8 @@
 #include <time.h>
 #include <conio.h>
 #include <locale.h>
+#include <ctype.h>
+#include <string.h>
 
 struct baseAttribures {
     int des;
@@ -38,6 +40,7 @@ void mainMenu();
 void firstOpen();
 int confirmOption(int ph);
 void firstMenu();
+salvarJogo(struct player *agente);
 
 int main (){
     setlocale( LC_ALL, "" );
@@ -45,7 +48,7 @@ int main (){
 
     firstMenu();
 
-    mainMenu();
+    mainMenu(&agente);
 
     return 0;
 }
@@ -210,7 +213,8 @@ void eventoBatalha(){
     }
 }
 
-void mainMenu(){
+void mainMenu(struct player *agente){
+    
     int localReal = 1, mainMenu = 0;
     while(mainMenu == 0){
         system("cls");
@@ -243,6 +247,8 @@ void mainMenu(){
                 case 3:
                 break;
                 case 4:
+                salvarJogo(agente);
+
                 break;
             }
         }
@@ -390,4 +396,24 @@ void firstMenu() {
             }
         }
     }
+}
+
+salvarJogo(struct player *agente) {
+    FILE *save;
+    save = fopen("save.txt", "w");
+    fprintf(save, "nome: %s\n", agente->name);
+    fprintf(save, "vida: %d\n", agente->agenteAtri.lp);
+    fprintf(save, "sanidade: %d\n", agente->sp);
+    fprintf(save, "nivel: %d\n", agente->agenteAtri.lvl);
+    fprintf(save, "dinheiro: %d\n", agente->coin);
+    fprintf(save, "força: %d\n", agente->agenteAtri.stg);
+    fprintf(save, "destreza: %d\n", agente->agenteAtri.des);
+    fprintf(save, "poder: %d\n", agente->agenteAtri.pod);
+    fprintf(save, "constiruição: %d\n", agente->agenteAtri.con);
+    fprintf(save, "xp: %d\n", agente->exp);
+
+    fclose(save);
+
+    printf("JOGO SALVO \n");
+    system("pause");
 }

@@ -1,0 +1,10 @@
+nome: Hugo
+vida: 20
+sanidade: 7
+nivel: 1
+dinheiro: 2298
+força: 4
+destreza: 3
+poder: 1
+constiruição: 4
+xp: 458
