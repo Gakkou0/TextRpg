@@ -384,14 +384,24 @@ void firstMenu() {
         }else if (c==13) {
             switch(localReal){
                 case 1:
-                firstOpen();
-                mainMenu = 1;
+                printf("Essa opção apagara seu ultimo save, deseja continuar? \n");
+                system("pause");
+                if (confirmOption(0)==1){
+                    firstOpen();
+                    mainMenu = 1;
+                }
                 break;
                 case 2:
                 break;
                 case 3:
+                system("cls");
+                printf("---------CREDITOS---------\n\n");
+                printf("Desenvolvedor: Hugo Rodrigues\n");
+                //vejo depois
+                system("pause");
                 break;
                 case 4:
+                exit(0);
                 break;
             }
         }
