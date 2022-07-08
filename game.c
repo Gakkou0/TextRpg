@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <conio.h>
-#include <locale.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -43,7 +42,6 @@ void firstMenu();
 salvarJogo(struct player *agente);
 
 int main (){
-    setlocale( LC_ALL, "" );
     system("cls");
 
     firstMenu();
@@ -336,7 +334,7 @@ void firstOpen() {
                 break;
                 case 2:
                 system("cls");
-                printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe? \n \n");
+                printf("Ocultistas sao expecialistas no uso de rituais para os mais diversos fins \nno entanto sao muito fracos em combates corpor a corpo, deseja selecionar essa classe? \n\n");
                 printf("Item exclusivo: Grimorio \n");
                 system("pause");
                 if (confirmOption(0)==1){
