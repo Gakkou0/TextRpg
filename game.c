@@ -460,24 +460,22 @@ ritual[2].dado = 6;
 ritual[2].tipo = 2;
 }
 
-void viewRitual(int *rituais[]) {
+void viewRitual(int rituais[]) {
     int localReal = 1, rituMenu = 0, i;
-    char opcao[3][20];
+    char opcao[3][30];
     
         for(i=0; i<3; i++){
-            if(*rituais[i]==0){
-                strcpy(opcao[i], "Não aprendido");
+            if(rituais[i]==0){
+                strcpy(opcao[i], "Nao aprendido");
             }
-            if(*rituais[i]==1){
+            if(rituais[i]==1){
                 strcpy(opcao[i], ritual[i].nome);
             }
         }
     
     while(rituMenu == 0){
         system("cls");
-        printf("RITUAIS"); 
-
-        printf("\n");
+        printf("RITUAIS \n\n");
 
         localdaseta(1, localReal);printf("%s \n", opcao[0]);
         localdaseta(2, localReal);printf("%s \n", opcao[1]);
@@ -502,6 +500,7 @@ void viewRitual(int *rituais[]) {
                 case 3:
                 break;
                 case 4:
+                rituMenu = 1;
                 break;
             }
         }
