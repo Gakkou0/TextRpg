@@ -39,19 +39,6 @@ struct monster {
     int xpReward;
 }monster;
 
-void armazenaRitual();
-void agenteStatus();
-int movimentoAtaque(int atriAtacante, int dadoAtaque);
-void localdaseta(int realPosition, int posicaoDaTecla);
-void eventoBatalha();
-void mainMenu(struct player *agente);
-void firstOpen();
-int confirmOption(int ph);
-void firstMenu();
-salvarJogo(struct player *agente);
-carregarJogo(struct player *agente);
-int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe);
-
 int main (){
     system("cls");
 
