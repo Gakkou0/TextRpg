@@ -15,13 +15,20 @@ struct baseAttribures {
     int ep;
 };
 
+struct rituais {
+    char nome[30];
+    int dado;
+    int tipo; //tipo 0: buff/debuff de status, tipo 1: cura, tipo 2: dano
+    int gastoPe;
+}ritual[3];
+
 struct player {
     struct baseAttribures agenteAtri;
     int exp;
     int sp;
     char name[20];
     int coin;
-
+    int rituaisAprendidos[3]; //1 para rituais aprendidos, 0 para slots vazios
 }agente;
 
 struct monster {
@@ -31,6 +38,7 @@ struct monster {
     int xpReward;
 }monster;
 
+void armazenaRitual();
 void agenteStatus();
 int movimentoAtaque(int atriAtacante, int dadoAtaque);
 void localdaseta(int realPosition, int posicaoDaTecla);
@@ -134,7 +142,7 @@ void eventoBatalha(){
         system("pause");
         break;
         case 1:
-        strcpy(monster.name, "Blood Zombie");
+        strcpy(monster.name, "Zombie de Sangue");
         monster.monsterAtri.lvl = (rand() % 5) + 1;
         monster.monsterAtri.des = 3;
         monster.monsterAtri.stg = 5 + monster.monsterAtri.lvl;
@@ -179,6 +187,8 @@ void eventoBatalha(){
                 monster.monsterAtri.lp -= movimentoAtaque(agente.agenteAtri.stg, 6);
                 break;
                 case 2:
+                setRitual();
+                viewRitual(agente.rituaisAprendidos);
                 break;
                 case 3:
                 break;
@@ -288,7 +298,7 @@ int confirmOption(int ph){
 }
 
 void firstOpen() {
-    int deci = 0, localReal = 1;
+    int deci = 0, localReal = 1, i;
 
     system("cls");
     printf("Seja Bem vindo Agente, por favor informe como deseja ser chamado: \n");
@@ -329,6 +339,9 @@ void firstOpen() {
                 agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
+                for (i = 0; i<3; i++){
+                    agente.rituaisAprendidos[i] = 0;
+                }
                 deci = 1;    
                 }
                 break;
@@ -348,6 +361,13 @@ void firstOpen() {
                 agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
+                for (i = 0; i<3; i++){
+                    if(i==0){
+                        agente.rituaisAprendidos[i] = 0;
+                    }else{
+                        agente.rituaisAprendidos[i] = 1;
+                    }
+                }
                 deci = 1;  
                 }
                 
@@ -424,4 +444,66 @@ salvarJogo(struct player *agente) {
 
     printf("JOGO SALVO \n");
     system("pause");
+}
+
+void setRitual(){
+strcpy(ritual[0].nome, "PARADOXO");
+ritual[0].dado = 3;
+ritual[0].tipo = 0;
+
+strcpy(ritual[1].nome, "ENVELHECIMENTO LOCALIZADO");
+ritual[1].dado = 6;
+ritual[1].tipo = 1;
+
+strcpy(ritual[2].nome, "DECADENCIA");
+ritual[2].dado = 6;
+ritual[2].tipo = 2;
+}
+
+void viewRitual(int *rituais[]) {
+    int localReal = 1, rituMenu = 0, i;
+    char opcao[3][20];
+    
+        for(i=0; i<3; i++){
+            if(*rituais[i]==0){
+                strcpy(opcao[i], "Não aprendido");
+            }
+            if(*rituais[i]==1){
+                strcpy(opcao[i], ritual[i].nome);
+            }
+        }
+    
+    while(rituMenu == 0){
+        system("cls");
+        printf("RITUAIS"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("%s \n", opcao[0]);
+        localdaseta(2, localReal);printf("%s \n", opcao[1]);
+        localdaseta(3, localReal);printf("%s \n", opcao[2]);
+        localdaseta(4, localReal);printf("VOLTAR \n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 5) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                break;
+                case 2:
+                break;
+                case 3:
+                break;
+                case 4:
+                break;
+            }
+        }
+    }
 }
