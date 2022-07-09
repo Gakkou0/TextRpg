@@ -12,6 +12,7 @@ struct baseAttribures {
     int pod;
     int lvl;
     int lp;
+    int lpMAX;
     int ep;
 };
 
@@ -48,6 +49,7 @@ void firstOpen();
 int confirmOption(int ph);
 void firstMenu();
 salvarJogo(struct player *agente);
+int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe);
 
 int main (){
     system("cls");
@@ -133,10 +135,11 @@ void eventoBatalha(){
         monster.monsterAtri.stg = 2;
         monster.monsterAtri.con = 3 + monster.monsterAtri.lvl;
         monster.monsterAtri.pod = 5 + monster.monsterAtri.lvl;
-        monster.monsterAtri.lp = monster.monsterAtri.con * 5;
         monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
         monster.monsterAtri.ep = monster.monsterAtri.des * 5;
         monster.coinReward = rand() % (200 - 100) + 200;
+        monster.monsterAtri.lpMAX = monster.monsterAtri.con * 5;
+        monster.monsterAtri.lp = monster.monsterAtri.lpMAX;
 
         printf("Voce se depara com um ser que incandesce uma luz azulada que parece flutuar em pleno ar, em sua face, uma expressão de puro desespero \n\n");
         system("pause");
@@ -148,10 +151,11 @@ void eventoBatalha(){
         monster.monsterAtri.stg = 5 + monster.monsterAtri.lvl;
         monster.monsterAtri.con = 4 + monster.monsterAtri.lvl;
         monster.monsterAtri.pod = 1;
-        monster.monsterAtri.lp = monster.monsterAtri.con * 5;
         monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
         monster.monsterAtri.ep = monster.monsterAtri.des * 5;
         monster.coinReward = rand() % (200 - 100) + 200;
+        monster.monsterAtri.lpMAX = monster.monsterAtri.con * 5;
+        monster.monsterAtri.lp = monster.monsterAtri.lpMAX;
         printf("Voce se depara com um ser bestial completamente enfurecido, toda sua pele parece estar em carne viva \n\n");
         system("pause");
 
@@ -161,7 +165,7 @@ void eventoBatalha(){
     while(combatEvent == 0){
         system("cls");
         printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
-        printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5, monster.monsterAtri.lp, monster.monsterAtri.con * 5);
+        printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
         printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
         printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
 
@@ -339,6 +343,7 @@ void firstOpen() {
                 agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
+                agente.agenteAtri.lpMAX = agente.agenteAtri.con * 5;
                 for (i = 0; i<3; i++){
                     agente.rituaisAprendidos[i] = 0;
                 }
@@ -361,6 +366,7 @@ void firstOpen() {
                 agente.sp = agente.agenteAtri.pod * 7;
                 agente.agenteAtri.ep = agente.agenteAtri.des * 5;
                 agente.coin=2000;
+                agente.agenteAtri.lpMAX = agente.agenteAtri.con * 5;
                 for (i = 0; i<3; i++){
                     if(i==0){
                         agente.rituaisAprendidos[i] = 0;
@@ -450,14 +456,17 @@ void setRitual(){
 strcpy(ritual[0].nome, "PARADOXO");
 ritual[0].dado = 3;
 ritual[0].tipo = 0;
+ritual[0].gastoPe = 1;
 
 strcpy(ritual[1].nome, "ENVELHECIMENTO LOCALIZADO");
 ritual[1].dado = 6;
 ritual[1].tipo = 1;
+ritual[1].gastoPe = 3;
 
 strcpy(ritual[2].nome, "DECADENCIA");
 ritual[2].dado = 6;
 ritual[2].tipo = 2;
+ritual[2].gastoPe = 2;
 }
 
 void viewRitual(int rituais[]) {
@@ -494,15 +503,109 @@ void viewRitual(int rituais[]) {
         }else if (c==13) {
             switch(localReal){
                 case 1:
+                if (strlen(opcao[0])==13){
+                    printf("Ritual não aprendido\n\n");
+                    system("pause");
+                }else{
+                    
+                }
                 break;
                 case 2:
+                if (strlen(opcao[1])==13){
+                    printf("Ritual não aprendido\n\n");
+                    system("pause");
+                }else{
+                    int valor = acaoCura(agente.agenteAtri.pod, ritual[1].dado, agente.agenteAtri.ep, ritual[1].gastoPe);
+                    if (valor != 0){
+                        agente.agenteAtri.lp += valor;
+                        agente.agenteAtri.ep -= ritual[1].gastoPe;
+                        rituMenu = 1;
+                    }
+                }
                 break;
                 case 3:
+                if (strlen(opcao[2])==13){
+                    printf("Ritual não aprendido\n\n");
+                    system("pause");
+                }else{
+
+                }
                 break;
                 case 4:
                 rituMenu = 1;
                 break;
             }
         }
+    }
+}
+
+int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe) {
+    
+    if (peAtual < gastoPe){
+        printf("PE insuficiente");
+        system("pause");
+        return 0;
+    }
+    srand(time(NULL));
+    int numDados = poderAgente/2 + poderAgente%2, i;
+    int dado, maiorDado = 0, dt = 20 - (numDados * 5), cura = 0; 
+
+    for (i=0; i<numDados; i++){
+        dado = (rand()%20)+1;
+        if (i==0){
+            maiorDado = dado;
+        }
+        if (dado > maiorDado){
+            maiorDado = dado;
+        }
+    }
+
+    if (maiorDado >= dt) {
+        if (maiorDado == 20){
+            cura = 2 * dadoCura;
+            if (agente.agenteAtri.lpMAX == agente.agenteAtri.lp){
+                printf("Vida cheia, impossivel usar \n");
+                system("pause");
+                return 0;
+            }
+            if (cura > (agente.agenteAtri.lpMAX - agente.agenteAtri.lp)){
+                cura = agente.agenteAtri.lpMAX - agente.agenteAtri.lp;
+                printf("Uma cura poderosa! \n");
+                printf("vida restalrada: %d \n", cura);
+                system("pause");
+                return cura;
+            }else{
+                printf("Uma cura poderosa! \n");
+                printf("vida restalrada: %d \n", cura);
+                system("pause");
+                return cura;
+            }
+        }else{
+            for (i=0; i<numDados; i++){
+                cura += (rand()%dadoCura)+1;
+            }
+            if (agente.agenteAtri.lpMAX == agente.agenteAtri.lp){
+                printf("Vida cheia, impossivel usar \n");
+                system("pause");
+                return 0;
+            }
+            if (cura > (agente.agenteAtri.lpMAX - agente.agenteAtri.lp)){
+                cura = agente.agenteAtri.lpMAX - agente.agenteAtri.lp;
+                printf("Voce se curou! \n");
+                printf("vida restalrada: %d \n", cura);
+                system("pause");
+                return cura;
+            }else{
+                printf("Voce se curou! \n");
+                printf("vida restalrada: %d \n", cura);
+                system("pause");
+                return cura;
+            }
+            printf("Voce se curou! \n");
+            printf("vida restalrada: %d \n", cura);
+            system("pause");
+            return cura;
+        }
+        
     }
 }
