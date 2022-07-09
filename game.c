@@ -44,11 +44,12 @@ void agenteStatus();
 int movimentoAtaque(int atriAtacante, int dadoAtaque);
 void localdaseta(int realPosition, int posicaoDaTecla);
 void eventoBatalha();
-void mainMenu();
+void mainMenu(struct player *agente);
 void firstOpen();
 int confirmOption(int ph);
 void firstMenu();
 salvarJogo(struct player *agente);
+carregarJogo(struct player *agente);
 int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe);
 
 int main (){
@@ -383,9 +384,9 @@ void firstOpen() {
     }
 }
 
-void firstMenu() {
-    int localReal = 1, mainMenu = 0;
-    while(mainMenu == 0){
+void firstMenu(struct player *agente) {
+    int localReal = 1, firstMenu = 0;
+    while(firstMenu == 0){
         system("cls");
         printf("RPG *coloque o nome aqui* \n \n"); 
 
@@ -412,10 +413,12 @@ void firstMenu() {
                 system("pause");
                 if (confirmOption(0)==1){
                     firstOpen();
-                    mainMenu = 1;
+                    firstMenu = 1;
                 }
                 break;
                 case 2:
+                carregarJogo(agente);
+                firstMenu = 1;
                 break;
                 case 3:
                 system("cls");
@@ -437,6 +440,7 @@ salvarJogo(struct player *agente) {
     save = fopen("save.txt", "w");
     fprintf(save, "nome: %s\n", agente->name);
     fprintf(save, "vida: %d\n", agente->agenteAtri.lp);
+    fprintf(save, "vida maxima %d\n", agente->agenteAtri.lpMAX);
     fprintf(save, "sanidade: %d\n", agente->sp);
     fprintf(save, "nivel: %d\n", agente->agenteAtri.lvl);
     fprintf(save, "dinheiro: %d\n", agente->coin);
@@ -449,6 +453,27 @@ salvarJogo(struct player *agente) {
     fclose(save);
 
     printf("JOGO SALVO \n");
+    system("pause");
+}
+
+carregarJogo(struct player *agente) {
+    FILE *save;
+    save = fopen("save.txt", "r");
+    fscanf(save, "nome: %s\n", agente->name);
+    fscanf(save, "vida: %d\n", &agente->agenteAtri.lp);
+    fscanf(save, "vida maxima %d\n", &agente->agenteAtri.lpMAX);
+    fscanf(save, "sanidade: %d\n", &agente->sp);
+    fscanf(save, "nivel: %d\n", &agente->agenteAtri.lvl);
+    fscanf(save, "dinheiro: %d\n", &agente->coin);
+    fscanf(save, "força: %d\n", &agente->agenteAtri.stg);
+    fscanf(save, "destreza: %d\n", &agente->agenteAtri.des);
+    fscanf(save, "poder: %d\n", &agente->agenteAtri.pod);
+    fscanf(save, "constiruição: %d\n", &agente->agenteAtri.con);
+    fscanf(save, "xp: %d\n", &agente->exp);
+
+    fclose(save);
+
+    printf("JOGO CARREGADO \n");
     system("pause");
 }
 

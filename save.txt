@@ -1,5 +1,6 @@
-nome: vitoria
+nome: Hugo
 vida: 15
+vida maxima 15
 sanidade: 35
 nivel: 1
 dinheiro: 2000
