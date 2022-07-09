@@ -55,7 +55,7 @@ int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe);
 int main (){
     system("cls");
 
-    firstMenu();
+    firstMenu(&agente);
 
     mainMenu(&agente);
 
