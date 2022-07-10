@@ -12,7 +12,7 @@ struct baseAttribures {
     int pod; //pontos de poder
     int lvl; //nivel
     int lp;  //pontos de vida atual
-    int lpMAX; //potnos de vida maxima
+    int lpMAX; //pontos de vida maxima
     int ep; //pontos de esforço
 };
 
@@ -270,6 +270,7 @@ void mainMenu(struct player *agente){ //exibe o menu principal
         localdaseta(2, localReal);printf("STATUS\n");
         localdaseta(3, localReal);printf("ITENS\n");
         localdaseta(4, localReal);printf("SALVAR\n");
+        localdaseta(5, localReal);printf("TESTE BASE\n");
         int c = getch();
 
         if(c == 119){
@@ -277,7 +278,7 @@ void mainMenu(struct player *agente){ //exibe o menu principal
                 localReal--;
             }
         } else if (c == 115) {
-            if (localReal < 4) {
+            if (localReal < 5) {
                 localReal++;
             }
         }else if (c==13) {
@@ -292,8 +293,9 @@ void mainMenu(struct player *agente){ //exibe o menu principal
                 break;
                 case 4:
                 salvarJogo(agente);
-
                 break;
+                case 5:
+                menuBase();
             }
         }
     }
@@ -794,5 +796,118 @@ void eventoSubirNivel(int nivel, int xp){
         printf("+1 pontos de destribuição");
         agente.pontos++;
         getch();
+    }
+}
+
+void menuBase() {
+    int localReal = 1, mainBase = 0;
+    while(mainBase == 0){
+        system("cls");
+        printf("CURSED SEED \n\n"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("LOJA\n");
+        localdaseta(2, localReal);printf("TRANSCENDER\n");
+        localdaseta(3, localReal);printf("DESCANSO\n");
+        localdaseta(4, localReal);printf("SAIR DA BASE\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 4) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                break;
+                case 2:
+                transcender();
+                break;
+                case 3:
+                printf("Voce descansou o maximo que conseguiu\n");
+                printf("Todos os atributos foram restaurados\n");
+                agente.atri.lp = agente.atri.lpMAX;
+                agente.atri.ep = agente.atri.pod * 5;
+                agente.sp = agente.atri.pod * 7;
+                salvarJogo(&agente);
+                break;
+                case 4:
+                mainBase = 1;
+                break;
+            }
+        }
+    }
+}
+
+void transcender(){
+    int localReal = 1, transcender = 0;
+    
+    if (agente.pontos==0){
+        system("cls");
+        printf("Você sente uma pressão gigantesca sobre seus ombros\n");
+        printf("Você não tem pontos\n");
+        getch();
+
+        printf("Dano de sanidade: 10\n");
+        agente.sp -= 10;
+        getch();
+        transcender = 1;
+    }
+
+    while(transcender == 0){
+        if (agente.pontos == 0){
+            transcender = 1;
+        }
+        system("cls");
+        printf("TRANSCENDER \n\n");
+
+        printf("Distribua seus pontos como achar necessario:\n");
+        printf("Pontos disponiveis: %d \n", agente.pontos); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("FORÇA\n");
+        localdaseta(2, localReal);printf("CONSTITUIÇÃO\n");
+        localdaseta(3, localReal);printf("PODER\n");
+        localdaseta(4, localReal);printf("DESTREZA\n");
+        localdaseta(5, localReal);printf("SAIR DO CIRCULO\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 5) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                agente.pontos-=1;
+                agente.atri.stg++;
+                break;
+                case 2:
+                agente.pontos-=1;
+                agente.atri.con++;
+                break;
+                case 3:
+                agente.pontos-=1;
+                agente.atri.pod++;
+                break;
+                case 4:
+                agente.pontos-=1;
+                agente.atri.des++;
+                break;
+                case 5:
+                transcender = 1;
+                break;
+            }
+        }
     }
 }
