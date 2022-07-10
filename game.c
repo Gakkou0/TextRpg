@@ -54,7 +54,7 @@ void agenteStatus() {
     printf("Agente: %s \n", agente.name);
     printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
     printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pod * 7);
-    printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+    printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.pod * 5);
     printf("Dinheiro: %d \n", agente.coin);
     printf("XP: %d / %d \n", agente.exp, agente.agenteAtri.lvl * 1000);
     system("pause");
@@ -124,7 +124,7 @@ void eventoBatalha(){
         monster.monsterAtri.con = 3 + monster.monsterAtri.lvl;
         monster.monsterAtri.pod = 5 + monster.monsterAtri.lvl;
         monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
-        monster.monsterAtri.ep = monster.monsterAtri.des * 5;
+        monster.monsterAtri.ep = monster.monsterAtri.pod * 5;
         monster.coinReward = rand() % (200 - 100) + 200;
         monster.monsterAtri.lpMAX = monster.monsterAtri.con * 5;
         monster.monsterAtri.lp = monster.monsterAtri.lpMAX;
@@ -140,7 +140,7 @@ void eventoBatalha(){
         monster.monsterAtri.con = 4 + monster.monsterAtri.lvl;
         monster.monsterAtri.pod = 1;
         monster.xpReward = rand() %  100 + (100 * monster.monsterAtri.lvl);
-        monster.monsterAtri.ep = monster.monsterAtri.des * 5;
+        monster.monsterAtri.ep = monster.monsterAtri.pod * 5;
         monster.coinReward = rand() % (200 - 100) + 200;
         monster.monsterAtri.lpMAX = monster.monsterAtri.con * 5;
         monster.monsterAtri.lp = monster.monsterAtri.lpMAX;
@@ -160,7 +160,7 @@ void eventoBatalha(){
             printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
             printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
             printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
-            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.pod * 5);
 
             printf("\n");
 
@@ -186,7 +186,7 @@ void eventoBatalha(){
                     break;
                     case 2:
                     setRitual();
-                    if (viewRitual(&agente, agente.rituaisAprendidos)!=0){
+                    if (viewRitual(&agente, &monster, agente.rituaisAprendidos)!=0){
                         vezPlayer = 1;
                     }
                     break;
@@ -228,16 +228,16 @@ void eventoBatalha(){
             printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
             printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
             printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
-            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.pod * 5);
 
             printf("\n");
 
             printf("Movimento do monstro \n\n");
             system("pause");
             if(randMonster == 1){
-                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.stg, 3);
+                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.stg, 2);
             }else{
-                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.pod, 3);
+                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.pod, 2);
             }
             system("pause");
             vezMonstro = 1;
@@ -361,7 +361,7 @@ void firstOpen() {
                 agente.agenteAtri.pod = 1;
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
                 agente.sp = agente.agenteAtri.pod * 7;
-                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
+                agente.agenteAtri.ep = agente.agenteAtri.pod * 5;
                 agente.coin=2000;
                 agente.agenteAtri.lpMAX = agente.agenteAtri.con * 5;
                 for (i = 0; i<3; i++){
@@ -384,7 +384,7 @@ void firstOpen() {
                 agente.agenteAtri.pod = 5;
                 agente.agenteAtri.lp = agente.agenteAtri.con * 5;
                 agente.sp = agente.agenteAtri.pod * 7;
-                agente.agenteAtri.ep = agente.agenteAtri.des * 5;
+                agente.agenteAtri.ep = agente.agenteAtri.pod * 5;
                 agente.coin=2000;
                 agente.agenteAtri.lpMAX = agente.agenteAtri.con * 5;
                 for (i = 0; i<3; i++){
@@ -513,7 +513,7 @@ ritual[2].tipo = 2;
 ritual[2].gastoPe = 2;
 }
 
-int viewRitual(struct player *agente, int rituais[]) {
+int viewRitual(struct player *agente, struct monster *monster, int rituais[]) {
     int localReal = 1, rituMenu = 0, i;
     char opcao[3][30];
     
@@ -572,8 +572,11 @@ int viewRitual(struct player *agente, int rituais[]) {
                 if (strlen(opcao[2])==13){
                     printf("Ritual não aprendido\n\n");
                     system("pause");
-                }else{
-
+                }else{ 
+                    monster->monsterAtri.lp -= movimentoAtaque(agente->agenteAtri.pod, ritual[2].dado);
+                    agente->agenteAtri.ep -= ritual[2].gastoPe;
+                    rituMenu = 1;
+                    return 1;
                 }
                 break;
                 case 4:
@@ -663,3 +666,4 @@ int verificaMorte(int vidaAlvo){
         return 0;
     }
 }
+
