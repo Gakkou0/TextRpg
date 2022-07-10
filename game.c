@@ -79,7 +79,7 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
     if (maiorDado >= dt) {
         if (maiorDado == 20){
             dano = 2 * dadoAtaque;
-            printf("Você acertou em cheio! \n");
+            printf("Acerto Critico! \n");
             printf("dano causado: %d \n", dano);
             system("pause");
             return dano;
@@ -87,14 +87,14 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) {
             for (i=0; i<numDados; i++){
                 dano += (rand()%dadoAtaque)+1;
             }
-            printf("Você acertou! \n");
+            printf("Sucesso no teste! \n");
             printf("dano causado: %d \n", dano);
             system("pause");
             return dano;
         }
         
     }else{
-        printf("Você errou! \n");
+        printf("Falha no teste \n");
         system("pause");
         return 0;
     }
@@ -149,66 +149,98 @@ void eventoBatalha(){
 
     }
     
-    int localReal = 1, combatEvent = 0;
+    int localReal = 1, combatEvent = 0, turno = 0, vezPlayer = 0, vezMonstro = 0;
     while(combatEvent == 0){
-        system("cls");
-        printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
-        printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
-        printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
-        printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+        turno++;
+        vezPlayer = 0; 
+        vezMonstro = 0;
+        while(vezPlayer==0){
+            system("cls");
+            printf("Turno: %d \n", turno);
+            printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
+            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
+            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
+            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
 
-        printf("\n");
+            printf("\n");
 
-        localdaseta(1, localReal);printf("COMBATE\n");
-        localdaseta(2, localReal);printf("RITUAIS\n");
-        localdaseta(3, localReal);printf("ITENS\n");
-        localdaseta(4, localReal);printf("FUGA\n");
-        int c = getch();
+            localdaseta(1, localReal);printf("COMBATE\n");
+            localdaseta(2, localReal);printf("RITUAIS\n");
+            localdaseta(3, localReal);printf("ITENS\n");
+            localdaseta(4, localReal);printf("FUGA\n");
+            int c = getch();
 
-        if(c == 119){
-            if (localReal > 1) {
-                localReal--;
-            }
-        } else if (c == 115) {
-            if (localReal < 4) {
-                localReal++;
-            }
-        }else if (c==13) {
-            switch(localReal){
-                case 1:
-                monster.monsterAtri.lp -= movimentoAtaque(agente.agenteAtri.stg, 6);
-                break;
-                case 2:
-                setRitual();
-                viewRitual(agente.rituaisAprendidos);
-                break;
-                case 3:
-                break;
-                case 4:
-                tryEscape = rand() % 2;
-                if (tryEscape == 1) {
-                    printf("Voce escapou, fim de combate \n\n");
-                    system("pause");
-                    combatEvent = 1;
-                } else {
-                    printf("Voce tenta escapar, tentativa falha \n\n");
-                    system("pause");
+            if(c == 119){
+                if (localReal > 1) {
+                    localReal--;
                 }
-                break;
+            } else if (c == 115) {
+                if (localReal < 4) {
+                    localReal++;
+                }
+            }else if (c==13) {
+                switch(localReal){
+                    case 1:
+                    monster.monsterAtri.lp -= movimentoAtaque(agente.agenteAtri.stg, 6);
+                    vezPlayer = 1;
+                    break;
+                    case 2:
+                    setRitual();
+                    if (viewRitual(&agente, agente.rituaisAprendidos)!=0){
+                        vezPlayer = 1;
+                    }
+                    break;
+                    case 3:
+                    break;
+                    case 4:
+                    tryEscape = rand() % 2;
+                    if (tryEscape == 1) {
+                        printf("Voce escapou, fim de combate \n\n");
+                        system("pause");
+                        combatEvent = 1;
+                        vezMonstro = 1;
+                        vezPlayer = 1;
+                    } else {
+                        printf("Voce tenta escapar, tentativa falha \n\n");
+                        system("pause");
+                        vezPlayer = 1;
+                    }
+                    break;
+                }
             }
-        }
 
-        if (monster.monsterAtri.lp<=0){
-            agente.coin += monster.coinReward;
-            agente.exp += monster.xpReward;
+            if (monster.monsterAtri.lp<=0){
+                agente.coin += monster.coinReward;
+                agente.exp += monster.xpReward;
 
-            printf("FIM DE COMBATE \n");
-            printf("Recompensas: \n \n");
-            printf("xp: +%d \n", monster.xpReward);
-            printf("dinheiro: +%d \n", monster.coinReward);
+                printf("FIM DE COMBATE \n");
+                printf("Recompensas: \n \n");
+                printf("xp: +%d \n", monster.xpReward);
+                printf("dinheiro: +%d \n", monster.coinReward);
 
+                system("pause");
+                vezMonstro = 1;
+                combatEvent = 1;
+            }
+        } while(vezMonstro==0){
+            system("cls");
+            printf("Turno: %d \n", turno);
+            printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster.name); 
+            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX, monster.monsterAtri.lp, monster.monsterAtri.lpMAX);
+            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.agenteAtri.pod * 7, monster.monsterAtri.lvl);
+            printf("PE: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.des * 5);
+
+            printf("\n");
+
+            printf("Movimento do monstro \n\n");
             system("pause");
-            combatEvent = 1;
+            if(randMonster == 1){
+                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.stg, 3);
+            }else{
+                agente.agenteAtri.lp -= movimentoAtaque(monster.monsterAtri.pod, 3);
+            }
+            system("pause");
+            vezMonstro = 1;
         }
     }
 }
@@ -481,7 +513,7 @@ ritual[2].tipo = 2;
 ritual[2].gastoPe = 2;
 }
 
-void viewRitual(int rituais[]) {
+int viewRitual(struct player *agente, int rituais[]) {
     int localReal = 1, rituMenu = 0, i;
     char opcao[3][30];
     
@@ -527,11 +559,12 @@ void viewRitual(int rituais[]) {
                     printf("Ritual não aprendido\n\n");
                     system("pause");
                 }else{
-                    int valor = acaoCura(agente.agenteAtri.pod, ritual[1].dado, agente.agenteAtri.ep, ritual[1].gastoPe);
+                    int valor = acaoCura(agente->agenteAtri.pod, ritual[1].dado, agente->agenteAtri.ep, ritual[1].gastoPe);
                     if (valor != 0){
-                        agente.agenteAtri.lp += valor;
-                        agente.agenteAtri.ep -= ritual[1].gastoPe;
+                        agente->agenteAtri.lp += valor;
+                        agente->agenteAtri.ep -= ritual[1].gastoPe;
                         rituMenu = 1;
+                        return 1;
                     }
                 }
                 break;
@@ -544,6 +577,7 @@ void viewRitual(int rituais[]) {
                 }
                 break;
                 case 4:
+                return 0;
                 rituMenu = 1;
                 break;
             }
@@ -619,5 +653,13 @@ int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe) {
             return cura;
         }
         
+    }
+}
+
+int verificaMorte(int vidaAlvo){
+    if (vidaAlvo <= 0){
+        return 1;
+    }else{
+        return 0;
     }
 }
