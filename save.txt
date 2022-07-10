@@ -1,8 +1,8 @@
 nome: Hugo
-vida: 14
-pontos de esforco 21
+vida: 24
+pontos de esforco 35
 vida maxima 24
-sanidade: 42
+sanidade: 49
 nivel: 3
 dinheiro: 2462
 força: 1

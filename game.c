@@ -867,7 +867,12 @@ void transcender(){
         printf("TRANSCENDER \n\n");
 
         printf("Distribua seus pontos como achar necessario:\n");
-        printf("Pontos disponiveis: %d \n", agente.pontos); 
+        printf("Pontos disponiveis: %d \n\n", agente.pontos);
+
+        printf("Pontos de força: %d\n",agente.atri.stg);
+        printf("Pontos de constituição: %d\n",agente.atri.con);
+        printf("Pontos de poder: %d\n",agente.atri.pod);
+        printf("Pontos de destreza: %d\n",agente.atri.des);
 
         printf("\n");
 
