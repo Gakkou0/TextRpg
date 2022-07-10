@@ -30,6 +30,7 @@ struct player {
     char name[20];
     int coin; //dinheiro do Agente
     int rituaisAprendidos[3]; //1 para rituais aprendidos, 0 para slots vazios
+    int contaMortes;
 }agente;
 
 struct monster {
@@ -244,7 +245,8 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 5, exibe e controla o 
             vezMonstro = 1;
         }
         if(verificaMorte(agente.atri.lp)==1){
-
+            eventoMorteAgente();
+            combatEvent = 1;
         }
     }
 }
@@ -363,14 +365,15 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.atri.stg = 4;
                 agente.atri.con = 4;
                 agente.atri.pod = 1;
-                agente.atri.lp = agente.atri.con * 5;
+                agente.atri.lp = agente.atri.con * 8;
                 agente.sp = agente.atri.pod * 7;
                 agente.atri.ep = agente.atri.pod * 5;
                 agente.coin=2000;
-                agente.atri.lpMAX = agente.atri.con * 5;
+                agente.atri.lpMAX = agente.atri.con * 8;
                 for (i = 0; i<3; i++){
                     agente.rituaisAprendidos[i] = 0;
                 }
+                agente.contaMortes = 0;
                 deci = 1;    
                 }
                 break;
@@ -386,11 +389,11 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.atri.stg = 1;
                 agente.atri.con = 3;
                 agente.atri.pod = 5;
-                agente.atri.lp = agente.atri.con * 5;
+                agente.atri.lp = agente.atri.con * 8;
                 agente.sp = agente.atri.pod * 7;
                 agente.atri.ep = agente.atri.pod * 5;
                 agente.coin=2000;
-                agente.atri.lpMAX = agente.atri.con * 5;
+                agente.atri.lpMAX = agente.atri.con * 8;
                 for (i = 0; i<3; i++){
                     if(i==0){
                         agente.rituaisAprendidos[i] = 0;
@@ -398,6 +401,7 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                         agente.rituaisAprendidos[i] = 1;
                     }
                 }
+                agente.contaMortes = 0;
                 deci = 1;  
                 }
                 
@@ -680,3 +684,78 @@ int verificaMorte(int vidaAlvo){
     }
 }
 
+void eventoMorteAgente() {
+    system("cls");
+    if(agente.contaMortes==0){
+        printf("Em seu ultimo momento...\n");
+        getch();
+        printf("Você percebe...\n");
+        getch();
+        printf("Você sucumbiu ao paranormal\n");
+        getch();
+        agente.contaMortes++;
+    }
+    else if(agente.contaMortes==1){
+        printf("Na sua cabeça...\n");
+        getch();
+        printf("Só se passa uma coisa...\n");
+        getch();
+        printf("Você sucumbiu ao paranormal\n");
+        getch();
+        agente.contaMortes++;
+    }
+    else if(agente.contaMortes==2){
+        printf("Você lembra de todos que te amam...\n");
+        getch();
+        printf("Agora já é tarde...\n");
+        getch();
+        printf("Você sucumbiu ao paranormal\n");
+        getch();
+        agente.contaMortes++;
+    }
+    else if(agente.contaMortes==3){
+        printf("Sua derrota já era certa...\n");
+        getch();
+        printf("Sempre foi...\n");
+        getch();
+        printf("Você sucumbiu ao paranormal\n");
+        getch();
+        agente.contaMortes++;
+    }
+    else if(agente.contaMortes>3){
+        printf("Você sucumbiu ao paranormal\n");
+        getch();
+        agente.contaMortes++;
+    }
+
+    int localReal = 1, morteMenu = 0;
+    while(morteMenu == 0){
+        system("cls");
+
+        printf("Agente, deseja continuar? \n");
+
+        localdaseta(1, localReal);printf("Devo continuar em frente \n");
+        localdaseta(2, localReal);printf("Desistir \n");
+
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 2) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                carregarJogo(&agente);
+                morteMenu = 1;
+                break;
+                case 2:
+                exit(0);
+            }
+        }
+    }
+}
