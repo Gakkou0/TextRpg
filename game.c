@@ -32,6 +32,7 @@ struct player {
     int coin; //dinheiro do Agente
     int rituaisAprendidos[3]; //1 para rituais aprendidos, 0 para slots vazios
     int contaMortes;
+    int pontos;
 }agente;
 
 struct monster {
@@ -380,6 +381,7 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 }
                 agente.contaMortes = 0;
                 agente.passaNivel = agente.atri.lvl * 1000;
+                agente.pontos = 0;
                 deci = 1;    
                 }
                 break;
@@ -409,6 +411,7 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 }
                 agente.contaMortes = 0;
                 agente.passaNivel = agente.atri.lvl * 1000;
+                agente.pontos = 0;
                 deci = 1;  
                 }
                 
@@ -498,6 +501,7 @@ salvarJogo(struct player *agente) {//Salva o progresso do agente
     fprintf(save, "Aprendeu Ritual 3: %d\n", agente->rituaisAprendidos[2]);
     fprintf(save, "Numero de mortes: %d\n", agente->contaMortes);
     fprintf(save, "Proximo nivel: %d \n", agente->passaNivel);
+    fprintf(save, "pontos de nivel %d \n", agente->pontos);
 
 
     fclose(save);
@@ -526,6 +530,7 @@ carregarJogo(struct player *agente) {//Carrega o progresso do agente
     fscanf(save, "Aprendeu Ritual 3: %d\n", &agente->rituaisAprendidos[2]);
     fscanf(save, "Numero de mortes: %d\n", &agente->contaMortes);
     fscanf(save, "Proximo nivel: %d \n", &agente->passaNivel);
+    fscanf(save, "pontos de nivel %d \n", &agente->pontos);
 
     fclose(save);
 
@@ -787,6 +792,7 @@ void eventoSubirNivel(int nivel, int xp){
         agente.passaNivel = agente.atri.lvl * 1000;
         printf("NONO NIVEL DE AGENTE!");
         printf("+1 pontos de destribuição");
+        agente.pontos++;
         getch();
     }
 }
