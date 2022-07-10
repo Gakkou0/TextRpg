@@ -112,7 +112,7 @@ void localdaseta(int realPosition, int posicaoDaTecla) {  //função responsavel
     }
 }
 
-void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 5, exibe e controla o menu de combate
+void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o menu de combate
     srand(time(NULL));
     int randMonster = rand () % 2;
     int tryEscape;
@@ -120,7 +120,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 5, exibe e controla o 
     switch(randMonster) { //Gera o monstro
         case 0:
         strcpy(monster.name, "Existido de energia");
-        monster.atri.lvl = (rand() % 5) + 1;
+        monster.atri.lvl = (rand() % 3) + 1;
         monster.atri.des = 3;
         monster.atri.stg = 2;
         monster.atri.con = 3 + monster.atri.lvl;
@@ -136,7 +136,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 5, exibe e controla o 
         break;
         case 1:
         strcpy(monster.name, "Zombie de Sangue");
-        monster.atri.lvl = (rand() % 5) + 1;
+        monster.atri.lvl = (rand() % 3) + 1;
         monster.atri.des = 3;
         monster.atri.stg = 5 + monster.atri.lvl;
         monster.atri.con = 4 + monster.atri.lvl;
@@ -485,6 +485,10 @@ salvarJogo(struct player *agente) {//Salva o progresso do agente
     fprintf(save, "poder: %d\n", agente->atri.pod);
     fprintf(save, "constiruição: %d\n", agente->atri.con);
     fprintf(save, "xp: %d\n", agente->exp);
+    fprintf(save, "Aprendeu Ritual 1: %d\n", agente->rituaisAprendidos[0]);
+    fprintf(save, "Aprendeu Ritual 2: %d\n", agente->rituaisAprendidos[1]);
+    fprintf(save, "Aprendeu Ritual 3: %d\n", agente->rituaisAprendidos[2]);
+    fprintf(save, "Numero de mortes %d\n", agente->contaMortes);
 
     fclose(save);
 
@@ -506,6 +510,10 @@ carregarJogo(struct player *agente) {//Carrega o progresso do agente
     fscanf(save, "poder: %d\n", &agente->atri.pod);
     fscanf(save, "constiruição: %d\n", &agente->atri.con);
     fscanf(save, "xp: %d\n", &agente->exp);
+    fscanf(save, "Aprendeu Ritual 1: %d\n", &agente->rituaisAprendidos[0]);
+    fscanf(save, "Aprendeu Ritual 2: %d\n", &agente->rituaisAprendidos[1]);
+    fscanf(save, "Aprendeu Ritual 3: %d\n", &agente->rituaisAprendidos[2]);
+    fscanf(save, "Numero de mortes %d\n", &agente->contaMortes);
 
     fclose(save);
 
@@ -758,4 +766,9 @@ void eventoMorteAgente() {
             }
         }
     }
+}
+
+void eventoSubirNivel(int nivel, int xp){
+    int passarNivel = nivel * 1000;
+    if ()
 }

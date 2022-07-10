@@ -1,11 +1,14 @@
-nome: Hugo
-vida: 15
-vida maxima 15
+nome: Gakkou
+vida: 12
+vida maxima 24
 sanidade: 35
 nivel: 1
-dinheiro: 2000
+dinheiro: 2207
 força: 1
 destreza: 2
 poder: 5
 constiruição: 3
-xp: 0
+xp: 232
+Aprendeu Ritual 1: 0
+Aprendeu Ritual 2: 1
+Aprendeu Ritual 3: 1
