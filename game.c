@@ -52,7 +52,7 @@ int main (){
 void agenteStatus() {
     system("cls");
     printf("Agente: %s \n", agente.name);
-    printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.con * 5);
+    printf("Pontos de vida: %d / %d \n", agente.agenteAtri.lp, agente.agenteAtri.lpMAX);
     printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.agenteAtri.pod * 7);
     printf("Pontos de esforco: %d / %d \n", agente.agenteAtri.ep, agente.agenteAtri.pod * 5);
     printf("Dinheiro: %d \n", agente.coin);
