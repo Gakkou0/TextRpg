@@ -1,18 +1,22 @@
-nome: Hugo
+nome: Zagones
 vida: 24
-pontos de esforco 35
+pontos de esforco 25
 vida maxima 24
-sanidade: 49
-nivel: 3
-dinheiro: 2462
+sanidade: 35
+nivel: 1
+dinheiro: 2000
 força: 1
 destreza: 2
-poder: 7
+poder: 5
 constiruição: 3
-xp: 2140
+xp: 0
 Aprendeu Ritual 1: 0
 Aprendeu Ritual 2: 1
 Aprendeu Ritual 3: 1
 Numero de mortes: 0
-Proximo nivel: 3000 
+Proximo nivel: 1000 
 pontos de nivel 0 
+quantidade item 1: 1 
+quantidade item 2: 0 
+quantidade item 3: 0 
+quantidade item 4: 3 

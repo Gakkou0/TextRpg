@@ -33,6 +33,7 @@ struct player {
     int rituaisAprendidos[3]; //1 para rituais aprendidos, 0 para slots vazios
     int contaMortes;
     int pontos;
+    int quantidadeItem[4];
 }agente;
 
 struct monster {
@@ -41,6 +42,11 @@ struct monster {
     int coinReward; //recompensa em dinheiro ao derrotar o monstro
     int xpReward; //recompensa em experiencia ao derrotar o monstro 
 }monster;
+
+struct item {
+    char name[20];
+    int preco;
+}item[4];
 
 int main (){
     system("cls");
@@ -384,6 +390,8 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.contaMortes = 0;
                 agente.passaNivel = agente.atri.lvl * 1000;
                 agente.pontos = 0;
+                agente.quantidadeItem[1] = 1;
+                agente.quantidadeItem[2] = 3;
                 deci = 1;    
                 }
                 break;
@@ -414,6 +422,10 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.contaMortes = 0;
                 agente.passaNivel = agente.atri.lvl * 1000;
                 agente.pontos = 0;
+                agente.quantidadeItem[0] = 1;
+                agente.quantidadeItem[3] = 3;
+
+
                 deci = 1;  
                 }
                 
@@ -504,7 +516,10 @@ salvarJogo(struct player *agente) {//Salva o progresso do agente
     fprintf(save, "Numero de mortes: %d\n", agente->contaMortes);
     fprintf(save, "Proximo nivel: %d \n", agente->passaNivel);
     fprintf(save, "pontos de nivel %d \n", agente->pontos);
-
+    fprintf(save, "quantidade item 1: %d \n", agente->quantidadeItem[0]);
+    fprintf(save, "quantidade item 2: %d \n", agente->quantidadeItem[1]);
+    fprintf(save, "quantidade item 3: %d \n", agente->quantidadeItem[2]);
+    fprintf(save, "quantidade item 4: %d \n", agente->quantidadeItem[3]);
 
     fclose(save);
 
@@ -533,6 +548,10 @@ carregarJogo(struct player *agente) {//Carrega o progresso do agente
     fscanf(save, "Numero de mortes: %d\n", &agente->contaMortes);
     fscanf(save, "Proximo nivel: %d \n", &agente->passaNivel);
     fscanf(save, "pontos de nivel %d \n", &agente->pontos);
+    fscanf(save, "quantidade item 1: %d \n", &agente->quantidadeItem[0]);
+    fscanf(save, "quantidade item 2: %d \n", &agente->quantidadeItem[1]);
+    fscanf(save, "quantidade item 3: %d \n", &agente->quantidadeItem[2]);
+    fscanf(save, "quantidade item 4: %d \n", &agente->quantidadeItem[3]);
 
     fclose(save);
 
@@ -585,7 +604,7 @@ int viewRitual(struct player *agente, struct monster *monster, int rituais[]) {
                 localReal--;
             }
         } else if (c == 115) {
-            if (localReal < 5) {
+            if (localReal < 4) {
                 localReal++;
             }
         }else if (c==13) {
@@ -824,6 +843,7 @@ void menuBase() {
         }else if (c==13) {
             switch(localReal){
                 case 1:
+                viewLoja ();
                 break;
                 case 2:
                 transcender();
@@ -911,6 +931,133 @@ void transcender(){
                 break;
                 case 5:
                 transcender = 1;
+                break;
+            }
+        }
+    }
+}
+
+void viewLoja (){
+    int localReal = 1, lojaMenu= 0;
+    while(lojaMenu == 0){
+        system("cls");
+        printf("OCULTA'S STORE \n\n"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("POÇÃO - 200g\n");
+        localdaseta(2, localReal);printf("PERGAMINHO - 300G\n");
+        localdaseta(3, localReal);printf("SAIR\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 3) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                if(agente.coin<200){
+                    printf("saldo abaixo do valor\n");
+                    system("pause");
+                }else{
+                    agente.quantidadeItem[2] += 2;
+                    agente.coin -= 200;
+                    printf("Item comprado\n");
+                    system("pause");
+                }
+                break;
+                case 2:
+                if(agente.coin<300){
+                    printf("saldo abaixo do valor\n");
+                    system("pause");
+                }else{
+                    agente.quantidadeItem[3] += 2;
+                    agente.coin -= 300;
+                    printf("Item comprado\n");
+                    system("pause");
+                }
+                break;
+                case 3:
+                lojaMenu = 1;
+                break;
+            }
+        }
+    }
+}
+
+void setItem(){
+    strcpy(item[0].name, "Grimorio");
+    item[0].preco = 0;
+    
+    strcpy(item[1].name, "Katana");
+    item[1].preco = 0;
+
+    strcpy(item[2].name, "Poção");
+    item[2].preco = 200;
+    
+    strcpy(item[3].name, "Pergaminho");
+    item[3].preco = 300;
+}
+
+int viewItem(struct player *agente) {
+    int localReal = 1, itemMenu = 0, i, k = 0;
+    char opcao[2][20];
+    
+        for(i=0; i<2; i++){
+            if(agente->quantidadeItem[i]>0){
+                strcpy(opcao[k], item[i].name);
+                k++;
+            }
+        }
+    
+    while(itemMenu == 0){
+        system("cls");
+        printf("ITENS \n\n");
+
+        localdaseta(1, localReal);printf("%s \n", opcao[0]);
+        localdaseta(2, localReal);printf("%s \n", opcao[1]);
+        localdaseta(3, localReal);printf("VOLTAR \n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 3) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                if (strlen(opcao[0])==13){
+                    printf("Ritual não aprendido\n\n");
+                    system("pause");
+                }else{
+                    
+                }
+                break;
+                case 2:
+                if (strlen(opcao[1])==13){
+                    printf("Ritual não aprendido\n\n");
+                    system("pause");
+                }else{
+                    int valor = acaoCura(agente->atri.pod, ritual[1].dado, agente->atri.ep, ritual[1].gastoPe);
+                    if (valor != 0){
+                        agente->atri.lp += valor;
+                        agente->atri.ep -= ritual[1].gastoPe;
+                        itemMenu = 1;
+                        return 1;
+                    }
+                }
+                case 3:
+                return 0;
+                itemMenu = 1;
                 break;
             }
         }
