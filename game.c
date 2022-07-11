@@ -1063,8 +1063,30 @@ int viewItem(struct player *agente, struct item *item, int quantItem[]) {
                 case 1:
                 break;
                 case 2:
+                if(quantItem[2]!=0){
+                    agente->atri.lp += 10;
+                    agente->quantidadeItem[2] -= 1;
+                    printf("Vida Curada em 10 pontos");
+                    getch();
+                    itemMenu = 1;
+                    return 1;
+                }else{
+                    printf("quantidade insulficiente");
+                    getch();
+                }
                 break;
                 case 3:
+                if(quantItem[3]!=0){
+                    agente->atri.ep += 10;
+                    agente->quantidadeItem[3] -= 1;
+                    printf("Esforço regenerado em 10 pontos");
+                    getch();
+                    itemMenu = 1;
+                    return 1;
+                }else{
+                    printf("quantidade insulficiente");
+                    getch();
+                }
                 break;
                 case 4:
                 return 0;
