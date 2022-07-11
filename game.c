@@ -4,6 +4,7 @@
 #include <conio.h>
 #include <ctype.h>
 #include <string.h>
+#include <windows.h>
 
 struct baseAttribures {
     int des; //pontos de destreza
@@ -51,6 +52,11 @@ struct item {
 int main (){
     system("cls");
 
+    UINT CPAGE_UTF8 = 65001;
+    UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+    SetConsoleOutputCP(CPAGE_UTF8);
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
     firstMenu(&agente);
 
     mainMenu(&agente);
@@ -93,7 +99,7 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) { //execulta a verificaç�
             dano = numDados * dadoAtaque;
             printf("Acerto Critico! \n");
             printf("dano causado: %d \n", dano);
-            system("pause");
+            getch();
             return dano;
         }else{
             for (i=0; i<numDados; i++){ //acerto não critico
@@ -101,13 +107,13 @@ int movimentoAtaque(int atriAtacante, int dadoAtaque) { //execulta a verificaç�
             }
             printf("Sucesso no teste! \n");
             printf("dano causado: %d \n", dano);
-            system("pause");
+            getch();
             return dano;
         }
         
     }else{
         printf("Falha no teste \n"); //falha
-        system("pause");
+        getch();
         return 0;
     }
 
@@ -203,6 +209,10 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
                     }
                     break;
                     case 3:
+                    setItem();
+                    if (viewItem(&agente, &item, agente.quantidadeItem)!=0){
+                        vezPlayer = 1;
+                    }
                     break;
                     case 4:
                     tryEscape = rand() % 2;
@@ -253,7 +263,6 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
             }else{
                 agente.atri.lp -= movimentoAtaque(monster.atri.pod, 2);
             }
-            system("pause");
             vezMonstro = 1;
         }
         if(verificaMorte(agente.atri.lp)==1){
@@ -296,6 +305,8 @@ void mainMenu(struct player *agente){ //exibe o menu principal
                 agenteStatus();
                 break;
                 case 3:
+                setItem();
+                viewItem(&agente, &item, agente->quantidadeItem);
                 break;
                 case 4:
                 salvarJogo(agente);
@@ -811,8 +822,8 @@ void eventoSubirNivel(int nivel, int xp){
     if (xp>=passarNivel){
         agente.atri.lvl++;
         agente.passaNivel = agente.atri.lvl * 1000;
-        printf("NONO NIVEL DE AGENTE!");
-        printf("+1 pontos de destribuição");
+        printf("NONO NIVEL DE AGENTE!\n\n");
+        printf("+1 pontos de destribuição\n");
         agente.pontos++;
         getch();
     }
@@ -1004,13 +1015,22 @@ void setItem(){
     item[3].preco = 300;
 }
 
-int viewItem(struct player *agente) {
-    int localReal = 1, itemMenu = 0, i, k = 0;
-    char opcao[2][20];
-    
-        for(i=0; i<2; i++){
-            if(agente->quantidadeItem[i]>0){
+int viewItem(struct player *agente, struct item *item, int quantItem[]) {
+    int localReal = 1, itemMenu = 0, i, k = 1;
+    char opcao[3][20];
+        
+        if(quantItem[0]==1){
+            strcpy(opcao[0], item[0].name);
+        }else if (quantItem[1]==1){
+            strcpy(opcao[0], item[1].name);
+        }
+
+        for(i=2; i<4; i++){
+            if(quantItem[i]>0){
                 strcpy(opcao[k], item[i].name);
+                 k++;
+            } else {
+                strcpy(opcao[k], "------------------");
                 k++;
             }
         }
@@ -1020,8 +1040,9 @@ int viewItem(struct player *agente) {
         printf("ITENS \n\n");
 
         localdaseta(1, localReal);printf("%s \n", opcao[0]);
-        localdaseta(2, localReal);printf("%s \n", opcao[1]);
-        localdaseta(3, localReal);printf("VOLTAR \n");
+        localdaseta(2, localReal);printf("%s - %d \n", opcao[1], quantItem[2]);
+        localdaseta(3, localReal);printf("%s - %d \n", opcao[2], quantItem[3]);
+        localdaseta(4, localReal);printf("VOLTAR \n");
         int c = getch();
 
         if(c == 119){
@@ -1029,33 +1050,18 @@ int viewItem(struct player *agente) {
                 localReal--;
             }
         } else if (c == 115) {
-            if (localReal < 3) {
+            if (localReal < 4) {
                 localReal++;
             }
         }else if (c==13) {
             switch(localReal){
                 case 1:
-                if (strlen(opcao[0])==13){
-                    printf("Ritual não aprendido\n\n");
-                    system("pause");
-                }else{
-                    
-                }
                 break;
                 case 2:
-                if (strlen(opcao[1])==13){
-                    printf("Ritual não aprendido\n\n");
-                    system("pause");
-                }else{
-                    int valor = acaoCura(agente->atri.pod, ritual[1].dado, agente->atri.ep, ritual[1].gastoPe);
-                    if (valor != 0){
-                        agente->atri.lp += valor;
-                        agente->atri.ep -= ritual[1].gastoPe;
-                        itemMenu = 1;
-                        return 1;
-                    }
-                }
+                break;
                 case 3:
+                break;
+                case 4:
                 return 0;
                 itemMenu = 1;
                 break;
