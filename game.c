@@ -2,19 +2,18 @@
 #include <stdlib.h>
 #include <time.h>
 #include <conio.h>
-#include <ctype.h>
 #include <string.h>
 #include <windows.h>
 
-struct baseAttribures {
+struct atributosBasicos {
     int des; //pontos de destreza
     int stg; //pontos de força
     int con; //pontos de constituição
     int pod; //pontos de poder
     int lvl; //nivel
-    int lp;  //pontos de vida atual
-    int lpMAX; //pontos de vida maxima
-    int ep; //pontos de esforço
+    int pv;  //pontos de vida atual
+    int pvMAX; //pontos de vida maxima
+    int pe; //pontos de esforço
 };
 
 struct rituais {
@@ -25,28 +24,28 @@ struct rituais {
 }ritual[3];
 
 struct player {
-    struct baseAttribures atri;
+    struct atributosBasicos atri;
     int exp; //experiencia do player
-    int passaNivel;
-    int sp; //pontos de sanidade
-    char name[20];
-    int coin; //dinheiro do Agente
+    int passaNivel;//experiencia necessaria para passar de nivel
+    int ps; //pontos de sanidade
+    char nome[20];//nome do agente
+    int coin; //dinheiro do agente
     int rituaisAprendidos[3]; //1 para rituais aprendidos, 0 para slots vazios
-    int contaMortes;
-    int pontos;
-    int quantidadeItem[4];
+    int contaMortes;//conta as mortes do agente 
+    int pontos; //pontos utilizados para o levelUp
+    int quantidadeItem[4]; //itens disponiveis no inventario
 }agente;
-
+ 
 typedef struct {
-    struct baseAttribures atri;
-    char name[20];
+    struct atributosBasicos atri;
+    char nome[20]; //nome do monstro
     int coinReward; //recompensa em dinheiro ao derrotar o monstro
     int xpReward; //recompensa em experiencia ao derrotar o monstro 
 }monstro;
 
 struct item {
-    char name[20];
-    int preco;
+    char nome[20];//nome do item
+    int preco; //valor do item
 }item[4];
 
 int main (){
@@ -57,19 +56,19 @@ int main (){
     SetConsoleOutputCP(CPAGE_UTF8);
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //exibe os acentos e caracteres PT-BR
 
-    firstMenu(&agente);
-
     mainMenu(&agente);
+
+    debugMenu(&agente);
 
     return 0;
 }
 
 void agenteStatus() { //exibe na tela um resumo dos status do agente
     system("cls");
-    printf("Agente: %s \n", agente.name);
-    printf("Pontos de vida: %d / %d \n", agente.atri.lp, agente.atri.lpMAX);
-    printf("Pontos de sanidade: %d / %d \n", agente.sp, agente.atri.pod * 7);
-    printf("Pontos de esforco: %d / %d \n", agente.atri.ep, agente.atri.pod * 5);
+    printf("Agente: %s \n", agente.nome);
+    printf("Pontos de vida: %d / %d \n", agente.atri.pv, agente.atri.pvMAX);
+    printf("Pontos de sanidade: %d / %d \n", agente.ps, agente.atri.pod * 7);
+    printf("Pontos de esforco: %d / %d \n", agente.atri.pe, agente.atri.pod * 5);
     printf("Dinheiro: %d \n", agente.coin);
     printf("Nivel do Agente: %d \n", agente.atri.lvl);
     printf("XP: %d / %d \n", agente.exp, agente.atri.lvl * 1000);
@@ -137,33 +136,33 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
     system("cls");
     switch(randMonster) { //Gera o monstro
         case 0:
-        strcpy(monster->name, "Existido de energia");
+        strcpy(monster->nome, "Existido de energia");
         monster->atri.lvl = (rand() % 3) + 1;
         monster->atri.des = 3;
         monster->atri.stg = 2;
         monster->atri.con = 3 + monster->atri.lvl;
         monster->atri.pod = 5 + monster->atri.lvl;
         monster->xpReward = rand() %  100 + /*(100 * monster.atri.lvl)*/ 1000;
-        monster->atri.ep = monster->atri.pod * 5;
+        monster->atri.pe = monster->atri.pod * 5;
         monster->coinReward = rand() % (200 - 100) + 200;
-        monster->atri.lpMAX = monster->atri.con * 5;
-        monster->atri.lp = monster->atri.lpMAX;
+        monster->atri.pvMAX = monster->atri.con * 5;
+        monster->atri.pv = monster->atri.pvMAX;
 
         printf("Voce se depara com um ser que incandesce uma luz azulada que parece flutuar em pleno ar, em sua face, uma expressão de puro desespero \n\n");
         system("pause");
         break;
         case 1:
-        strcpy(monster->name, "Zombie de Sangue");
+        strcpy(monster->nome, "Zombie de Sangue");
         monster->atri.lvl = (rand() % 3) + 1;
         monster->atri.des = 3;
         monster->atri.stg = 5 + monster->atri.lvl;
         monster->atri.con = 4 + monster->atri.lvl;
         monster->atri.pod = 1;
         monster->xpReward = rand() %  100 + /*(100 * monster.atri.lvl)*/ 1000;
-        monster->atri.ep = monster->atri.pod * 5;
+        monster->atri.pe = monster->atri.pod * 5;
         monster->coinReward = rand() % (200 - 100) + 100;
-        monster->atri.lpMAX = monster->atri.con * 5;
-        monster->atri.lp = monster->atri.lpMAX;
+        monster->atri.pvMAX = monster->atri.con * 5;
+        monster->atri.pv = monster->atri.pvMAX;
         printf("Voce se depara com um ser bestial completamente enfurecido, toda sua pele parece estar em carne viva \n\n");
         system("pause");
 
@@ -177,10 +176,10 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         while(vezPlayer==0){
             system("cls");
             printf("Turno: %d \n", turno);
-            printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster->name); 
-            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.lp, agente.atri.lpMAX, monster->atri.lp, monster->atri.lpMAX);
-            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.atri.pod * 7, monster->atri.lvl);
-            printf("PE: %d / %d \n", agente.atri.ep, agente.atri.pod * 5);
+            printf("Agente: %s \t\t   \t\t %s  \n", agente.nome, monster->nome); 
+            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.pv, agente.atri.pvMAX, monster->atri.pv, monster->atri.pvMAX);
+            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.ps, agente.atri.pod * 7, monster->atri.lvl);
+            printf("PE: %d / %d \n", agente.atri.pe, agente.atri.pod * 5);
 
             printf("\n");
 
@@ -201,7 +200,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
             }else if (c==13) {
                 switch(localReal){
                     case 1:
-                    monster->atri.lp -= movimentoAtaque(agente.atri.stg, 6);
+                    monster->atri.pv -= movimentoAtaque(agente.atri.stg, 6);
                     vezPlayer = 1;
                     break;
                     case 2:
@@ -234,7 +233,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
                 }
             }
 
-            if (verificaMorte(monster->atri.lp)==1){
+            if (verificaMorte(monster->atri.pv)==1){
                 agente.coin += monster->coinReward;
                 agente.exp += monster->xpReward;
 
@@ -253,23 +252,23 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         } while(vezMonstro==0){
             system("cls");
             printf("Turno: %d \n", turno);
-            printf("Agente: %s \t\t   \t\t %s  \n", agente.name, monster->name); 
-            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.lp, agente.atri.lpMAX, monster->atri.lp, monster->atri.lpMAX);
-            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.sp, agente.atri.pod * 7, monster->atri.lvl);
-            printf("PE: %d / %d \n", agente.atri.ep, agente.atri.pod * 5);
+            printf("Agente: %s \t\t   \t\t %s  \n", agente.nome, monster->nome); 
+            printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.pv, agente.atri.pvMAX, monster->atri.pv, monster->atri.pvMAX);
+            printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.ps, agente.atri.pod * 7, monster->atri.lvl);
+            printf("PE: %d / %d \n", agente.atri.pe, agente.atri.pod * 5);
 
             printf("\n");
 
             printf("Movimento do monstro \n\n");
             system("pause");
             if(randMonster == 1){
-                agente.atri.lp -= movimentoAtaque(monster->atri.stg, 2);
+                agente.atri.pv -= movimentoAtaque(monster->atri.stg, 2);
             }else{
-                agente.atri.lp -= movimentoAtaque(monster->atri.pod, 2);
+                agente.atri.pv -= movimentoAtaque(monster->atri.pod, 2);
             }
             vezMonstro = 1;
         }
-        if(verificaMorte(agente.atri.lp)==1){
+        if(verificaMorte(agente.atri.pv)==1){
             eventoMorteAgente();
             combatEvent = 1;
             free(monster);
@@ -277,10 +276,10 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
     }
 }
 
-void mainMenu(struct player *agente){ //exibe o menu principal
+void debugMenu(struct player *agente){ //exibe o menu principal
     
-    int localReal = 1, mainMenu = 0;
-    while(mainMenu == 0){
+    int localReal = 1, debugMenu = 0;
+    while(debugMenu == 0){
         system("cls");
         printf("MENU PRINCIPAL \n \n"); 
 
@@ -357,13 +356,13 @@ int confirmOption(int ph){ //função de confirmação binaria
 
 }
 
-void firstOpen() { //Menu exibido apenas na criação de um novo save
+void novoSave() { //Menu exibido apenas na criação de um novo save
     int deci = 0, localReal = 1, i;
 
     system("cls");
     printf("Seja Bem vindo Agente, por favor informe como deseja ser chamado: \n");
     printf("Agente: ");
-    gets(agente.name);
+    gets(agente.nome);
 
     while (deci==0){
         system("cls");
@@ -395,11 +394,11 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.atri.stg = 4;
                 agente.atri.con = 4;
                 agente.atri.pod = 1;
-                agente.atri.lp = agente.atri.con * 8;
-                agente.sp = agente.atri.pod * 7;
-                agente.atri.ep = agente.atri.pod * 5;
+                agente.atri.pv = agente.atri.con * 8;
+                agente.ps = agente.atri.pod * 7;
+                agente.atri.pe = agente.atri.pod * 5;
                 agente.coin=2000;
-                agente.atri.lpMAX = agente.atri.con * 8;
+                agente.atri.pvMAX = agente.atri.con * 8;
                 for (i = 0; i<3; i++){
                     agente.rituaisAprendidos[i] = 0;
                 }
@@ -423,11 +422,11 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
                 agente.atri.stg = 1;
                 agente.atri.con = 3;
                 agente.atri.pod = 5;
-                agente.atri.lp = agente.atri.con * 8;
-                agente.sp = agente.atri.pod * 7;
-                agente.atri.ep = agente.atri.pod * 5;
+                agente.atri.pv = agente.atri.con * 8;
+                agente.ps = agente.atri.pod * 7;
+                agente.atri.pe = agente.atri.pod * 5;
                 agente.coin=2000;
-                agente.atri.lpMAX = agente.atri.con * 8;
+                agente.atri.pvMAX = agente.atri.con * 8;
                 for (i = 0; i<3; i++){
                     if(i==0){
                         agente.rituaisAprendidos[i] = 0;
@@ -451,9 +450,9 @@ void firstOpen() { //Menu exibido apenas na criação de um novo save
     }
 }
 
-void firstMenu(struct player *agente) {//exibe o primeiro menu do jogo
-    int localReal = 1, firstMenu = 0;
-    while(firstMenu == 0){
+void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
+    int localReal = 1, mainMenu = 0;
+    while(mainMenu == 0){
         system("cls");
         
         printf("  _____                        _ \n");
@@ -488,13 +487,13 @@ void firstMenu(struct player *agente) {//exibe o primeiro menu do jogo
                 printf("Essa opção apagara seu ultimo save, deseja continuar? \n");
                 system("pause");
                 if (confirmOption(0)==1){
-                    firstOpen();
-                    firstMenu = 1;
+                    novoSave();
+                    mainMenu = 1;
                 }
                 break;
                 case 2:
                 carregarJogo(agente);
-                firstMenu = 1;
+                mainMenu = 1;
                 break;
                 case 3:
                 system("cls");
@@ -514,11 +513,11 @@ void firstMenu(struct player *agente) {//exibe o primeiro menu do jogo
 salvarJogo(struct player *agente) {//Salva o progresso do agente
     FILE *save;
     save = fopen("save.txt", "w");
-    fprintf(save, "nome: %s\n", agente->name);
-    fprintf(save, "vida: %d\n", agente->atri.lp);
-    fprintf(save, "pontos de esforco %d\n", agente->atri.ep);
-    fprintf(save, "vida maxima %d\n", agente->atri.lpMAX);
-    fprintf(save, "sanidade: %d\n", agente->sp);
+    fprintf(save, "nome: %s\n", agente->nome);
+    fprintf(save, "vida: %d\n", agente->atri.pv);
+    fprintf(save, "pontos de esforco %d\n", agente->atri.pe);
+    fprintf(save, "vida maxima %d\n", agente->atri.pvMAX);
+    fprintf(save, "sanidade: %d\n", agente->ps);
     fprintf(save, "nivel: %d\n", agente->atri.lvl);
     fprintf(save, "dinheiro: %d\n", agente->coin);
     fprintf(save, "força: %d\n", agente->atri.stg);
@@ -546,11 +545,11 @@ salvarJogo(struct player *agente) {//Salva o progresso do agente
 carregarJogo(struct player *agente) {//Carrega o progresso do agente
     FILE *save;
     save = fopen("save.txt", "r");
-    fscanf(save, "nome: %s\n", agente->name);
-    fscanf(save, "vida: %d\n", &agente->atri.lp);
-    fscanf(save, "pontos de esforco %d\n", &agente->atri.ep);
-    fscanf(save, "vida maxima %d\n", &agente->atri.lpMAX);
-    fscanf(save, "sanidade: %d\n", &agente->sp);
+    fscanf(save, "nome: %s\n", agente->nome);
+    fscanf(save, "vida: %d\n", &agente->atri.pv);
+    fscanf(save, "pontos de esforco %d\n", &agente->atri.pe);
+    fscanf(save, "vida maxima %d\n", &agente->atri.pvMAX);
+    fscanf(save, "sanidade: %d\n", &agente->ps);
     fscanf(save, "nivel: %d\n", &agente->atri.lvl);
     fscanf(save, "dinheiro: %d\n", &agente->coin);
     fscanf(save, "força: %d\n", &agente->atri.stg);
@@ -638,10 +637,10 @@ int viewRitual(struct player *agente, monstro *monster, int rituais[]) {
                     printf("Ritual não aprendido\n\n");
                     system("pause");
                 }else{
-                    int valor = acaoCura(agente->atri.pod, ritual[1].dado, agente->atri.ep, ritual[1].gastoPe);
+                    int valor = acaoCura(agente->atri.pod, ritual[1].dado, agente->atri.pe, ritual[1].gastoPe);
                     if (valor != 0){
-                        agente->atri.lp += valor;
-                        agente->atri.ep -= ritual[1].gastoPe;
+                        agente->atri.pv += valor;
+                        agente->atri.pe -= ritual[1].gastoPe;
                         rituMenu = 1;
                         return 1;
                     }
@@ -652,8 +651,8 @@ int viewRitual(struct player *agente, monstro *monster, int rituais[]) {
                     printf("Ritual não aprendido\n\n");
                     system("pause");
                 }else{ 
-                    monster->atri.lp -= movimentoAtaque(agente->atri.pod, ritual[2].dado);
-                    agente->atri.ep -= ritual[2].gastoPe;
+                    monster->atri.pv -= movimentoAtaque(agente->atri.pod, ritual[2].dado);
+                    agente->atri.pe -= ritual[2].gastoPe;
                     rituMenu = 1;
                     return 1;
                 }
@@ -691,13 +690,13 @@ int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe) {//calcula
     if (maiorDado >= dt) {
         if (maiorDado == 20){
             cura = numDados * dadoCura;
-            if (agente.atri.lpMAX == agente.atri.lp){
+            if (agente.atri.pvMAX == agente.atri.pv){
                 printf("Vida cheia, impossivel usar \n");
                 system("pause");
                 return 0;
             }
-            if (cura > (agente.atri.lpMAX - agente.atri.lp)){
-                cura = agente.atri.lpMAX - agente.atri.lp;
+            if (cura > (agente.atri.pvMAX - agente.atri.pv)){
+                cura = agente.atri.pvMAX - agente.atri.pv;
                 printf("Uma cura poderosa! \n");
                 printf("vida restalrada: %d \n", cura);
                 system("pause");
@@ -712,13 +711,13 @@ int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe) {//calcula
             for (i=0; i<numDados; i++){
                 cura += (rand()%dadoCura)+1;
             }
-            if (agente.atri.lpMAX == agente.atri.lp){
+            if (agente.atri.pvMAX == agente.atri.pv){
                 printf("Vida cheia, impossivel usar \n");
                 system("pause");
                 return 0;
             }
-            if (cura > (agente.atri.lpMAX - agente.atri.lp)){
-                cura = agente.atri.lpMAX - agente.atri.lp;
+            if (cura > (agente.atri.pvMAX - agente.atri.pv)){
+                cura = agente.atri.pvMAX - agente.atri.pv;
                 printf("Voce se curou! \n");
                 printf("vida restalrada: %d \n", cura);
                 system("pause");
@@ -867,9 +866,9 @@ void menuBase() {
                 case 3:
                 printf("Voce descansou o maximo que conseguiu\n");
                 printf("Todos os atributos foram restaurados\n");
-                agente.atri.lp = agente.atri.lpMAX;
-                agente.atri.ep = agente.atri.pod * 5;
-                agente.sp = agente.atri.pod * 7;
+                agente.atri.pv = agente.atri.pvMAX;
+                agente.atri.pe = agente.atri.pod * 5;
+                agente.ps = agente.atri.pod * 7;
                 salvarJogo(&agente);
                 break;
                 case 4:
@@ -890,7 +889,7 @@ void transcender(){
         getch();
 
         printf("Dano de sanidade: 10\n");
-        agente.sp -= 10;
+        agente.ps -= 10;
         getch();
         transcender = 1;
     }
@@ -1020,16 +1019,16 @@ void viewLoja (){
 }
 
 void setItem(){
-    strcpy(item[0].name, "Grimorio");
+    strcpy(item[0].nome, "Grimorio");
     item[0].preco = 0;
     
-    strcpy(item[1].name, "Katana");
+    strcpy(item[1].nome, "Katana");
     item[1].preco = 0;
 
-    strcpy(item[2].name, "Poção");
+    strcpy(item[2].nome, "Poção");
     item[2].preco = 200;
     
-    strcpy(item[3].name, "Pergaminho");
+    strcpy(item[3].nome, "Pergaminho");
     item[3].preco = 300;
 }
 
@@ -1038,14 +1037,14 @@ int viewItem(struct player *agente, struct item *item, int quantItem[]) {
     char opcao[3][20];
         
         if(quantItem[0]==1){
-            strcpy(opcao[0], item[0].name);
+            strcpy(opcao[0], item[0].nome);
         }else if (quantItem[1]==1){
-            strcpy(opcao[0], item[1].name);
+            strcpy(opcao[0], item[1].nome);
         }
 
         for(i=2; i<4; i++){
             if(quantItem[i]>0){
-                strcpy(opcao[k], item[i].name);
+                strcpy(opcao[k], item[i].nome);
                  k++;
             } else {
                 strcpy(opcao[k], "------------------");
@@ -1077,7 +1076,7 @@ int viewItem(struct player *agente, struct item *item, int quantItem[]) {
                 break;
                 case 2:
                 if(quantItem[2]!=0){
-                    agente->atri.lp += 10;
+                    agente->atri.pv += 10;
                     agente->quantidadeItem[2] -= 1;
                     printf("Vida Curada em 10 pontos");
                     getch();
@@ -1090,7 +1089,7 @@ int viewItem(struct player *agente, struct item *item, int quantItem[]) {
                 break;
                 case 3:
                 if(quantItem[3]!=0){
-                    agente->atri.ep += 10;
+                    agente->atri.pe += 10;
                     agente->quantidadeItem[3] -= 1;
                     printf("Esforço regenerado em 10 pontos");
                     getch();
@@ -1115,14 +1114,14 @@ void viewItemMenu(int quantItem[]) {
     char opcao[3][20];
         
         if(quantItem[0]==1){
-            strcpy(opcao[0], item[0].name);
+            strcpy(opcao[0], item[0].nome);
         }else if (quantItem[1]==1){
-            strcpy(opcao[0], item[1].name);
+            strcpy(opcao[0], item[1].nome);
         }
 
         for(i=2; i<4; i++){
             if(quantItem[i]>0){
-                strcpy(opcao[k], item[i].name);
+                strcpy(opcao[k], item[i].nome);
                  k++;
             } else {
                 strcpy(opcao[k], "------------------");
@@ -1137,7 +1136,7 @@ void viewItemMenu(int quantItem[]) {
         if(localReal == 1 && quantItem[1]==1){
             printf("DESCRIÇÃO: Katana\n\n");
             printf("Arma de curta distância usada para destruir o paranormal\n");
-            printf("Status: +2d10 de dano ao atacar usando golpes físicos \n\n");
+            printf("Status: +2d10 de dano ao atacar usando gopves físicos \n\n");
         }
         else if(localReal == 1 && quantItem[0]==1){
             printf("DESCRIÇÃO: Grimorio\n\n");
@@ -1177,7 +1176,7 @@ void viewItemMenu(int quantItem[]) {
                 break;
                 case 2:
                 if(quantItem[2]!=0){
-                    agente.atri.lp += 10;
+                    agente.atri.pv += 10;
                     agente.quantidadeItem[2] -= 1;
                     printf("Vida Curada em 10 pontos");
                     getch();
@@ -1190,7 +1189,7 @@ void viewItemMenu(int quantItem[]) {
                 break;
                 case 3:
                 if(quantItem[3]!=0){
-                    agente.atri.ep += 10;
+                    agente.atri.pe += 10;
                     agente.quantidadeItem[3] -= 1;
                     printf("Esforço regenerado em 10 pontos");
                     getch();
