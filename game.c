@@ -311,7 +311,7 @@ void mainMenu(struct player *agente){ //exibe o menu principal
                 break;
                 case 3:
                 setItem();
-                viewItem(&agente, &item, agente->quantidadeItem);
+                viewItemMenu(agente->quantidadeItem);
                 break;
                 case 4:
                 salvarJogo(agente);
@@ -460,7 +460,7 @@ void firstMenu(struct player *agente) {//exibe o primeiro menu do jogo
         printf(" / ____|                      | |\n");
         printf("| |    _   _ _ __ ___  ___  __| |\n");
         printf("| |   | | | | '__/ __|/ _ || _` |\n");
-        printf("| |___| |_| | |  |__ |  __/ (_| |\n");
+        printf("| |___| |_| | |  |__ |  __/|(_| |\n");
         printf(" |_____|__,_|_|  |___/|___||__,_|\n");
                                         
                                         
@@ -959,6 +959,19 @@ void viewLoja (){
         system("cls");
         printf("OCULTA'S STORE \n\n"); 
 
+        if(localReal == 1){
+            printf("DESCRIÇÃO: Poção\n\n");
+            printf("Esse item cura 10 pontos de vida\n");
+            printf("Status: Esse item pode passar do número de PV MAXIMO até seu proximo descanso\n\n");
+        }
+        else if(localReal == 2){
+            printf("DESCRIÇÃO: Pergaminho\n\n");
+            printf("Esse item cura 10 pontos de esforço\n");
+            printf("Status: Esse item pode passar do número de PE MAXIMO até seu proximo descanso\n\n");
+        }else{
+            printf("\n\n\n\n\n");
+        }
+
         printf("\n");
 
         localdaseta(1, localReal);printf("POÇÃO - 200g\n");
@@ -1079,6 +1092,106 @@ int viewItem(struct player *agente, struct item *item, int quantItem[]) {
                 if(quantItem[3]!=0){
                     agente->atri.ep += 10;
                     agente->quantidadeItem[3] -= 1;
+                    printf("Esforço regenerado em 10 pontos");
+                    getch();
+                    itemMenu = 1;
+                    return 1;
+                }else{
+                    printf("quantidade insulficiente");
+                    getch();
+                }
+                break;
+                case 4:
+                return 0;
+                itemMenu = 1;
+                break;
+            }
+        }
+    }
+}
+
+void viewItemMenu(int quantItem[]) {
+    int localReal = 1, itemMenu = 0, i, k = 1;
+    char opcao[3][20];
+        
+        if(quantItem[0]==1){
+            strcpy(opcao[0], item[0].name);
+        }else if (quantItem[1]==1){
+            strcpy(opcao[0], item[1].name);
+        }
+
+        for(i=2; i<4; i++){
+            if(quantItem[i]>0){
+                strcpy(opcao[k], item[i].name);
+                 k++;
+            } else {
+                strcpy(opcao[k], "------------------");
+                k++;
+            }
+        }
+    
+    while(itemMenu == 0){
+        system("cls");
+        printf("ITENS \n\n");
+
+        if(localReal == 1 && quantItem[1]==1){
+            printf("DESCRIÇÃO: Katana\n\n");
+            printf("Arma de curta distância usada para destruir o paranormal\n");
+            printf("Status: +2d10 de dano ao atacar usando golpes físicos \n\n");
+        }
+        else if(localReal == 1 && quantItem[0]==1){
+            printf("DESCRIÇÃO: Grimorio\n\n");
+            printf("Esse aplifica seus poderes paranormais\n");
+            printf("Status: +2 pontos na pericia de PODER \n\n");
+        }
+        else if(localReal == 2){
+            printf("DESCRIÇÃO: Poção\n\n");
+            printf("Esse item cura 10 pontos de vida\n");
+            printf("Status: Esse item pode passar do número de PV MAXIMO até seu proximo descanso\n\n");
+        }
+        else if(localReal == 3){
+            printf("DESCRIÇÃO: Pergaminho\n\n");
+            printf("Esse item cura 10 pontos de esforço\n");
+            printf("Status: Esse item pode passar do número de PE MAXIMO até seu proximo descanso\n\n");
+        }else{
+            printf("\n\n\n\n\n");
+        }
+
+        localdaseta(1, localReal);printf("%s \n", opcao[0]);
+        localdaseta(2, localReal);printf("%s - %d \n", opcao[1], quantItem[2]);
+        localdaseta(3, localReal);printf("%s - %d \n", opcao[2], quantItem[3]);
+        localdaseta(4, localReal);printf("VOLTAR \n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 4) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                break;
+                case 2:
+                if(quantItem[2]!=0){
+                    agente.atri.lp += 10;
+                    agente.quantidadeItem[2] -= 1;
+                    printf("Vida Curada em 10 pontos");
+                    getch();
+                    itemMenu = 1;
+                    return 1;
+                }else{
+                    printf("quantidade insulficiente");
+                    getch();
+                }
+                break;
+                case 3:
+                if(quantItem[3]!=0){
+                    agente.atri.ep += 10;
+                    agente.quantidadeItem[3] -= 1;
                     printf("Esforço regenerado em 10 pontos");
                     getch();
                     itemMenu = 1;
