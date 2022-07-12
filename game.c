@@ -65,6 +65,7 @@ int main (){
     }else{
         menuBase();    
     }
+    investigacao();
 
     return 0;
 }
@@ -154,8 +155,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         monster->atri.pvMAX = monster->atri.con * 5;
         monster->atri.pv = monster->atri.pvMAX;
 
-        printf("Voce se depara com um ser que incandesce uma luz azulada que parece flutuar em pleno ar, em sua face, uma expressão de puro desespero \n\n");
-        system("pause");
+        dialogo("você se depara com um ser que incandesce uma luz azulada que parece flutuar em pleno ar, em sua face, uma expressão de puro desespero",0);
         break;
         case 1:
         strcpy(monster->nome, "Zombie de Sangue");
@@ -169,8 +169,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         monster->coinReward = rand() % (200 - 100) + 100;
         monster->atri.pvMAX = monster->atri.con * 5;
         monster->atri.pv = monster->atri.pvMAX;
-        printf("Voce se depara com um ser bestial completamente enfurecido, toda sua pele parece estar em carne viva \n\n");
-        system("pause");
+        dialogo("você se depara com um ser bestial completamente enfurecido, toda sua pele parece estar em carne viva",0);
 
     }
     
@@ -226,14 +225,14 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
                     case 4:
                     tryEscape = rand() % 2;
                     if (tryEscape == 1) {
-                        printf("Voce escapou, fim de combate \n\n");
+                        printf("Você escapou, fim de combate \n\n");
                         system("pause");
                         combatEvent = 1;
                         vezMonstro = 1;
                         vezPlayer = 1;
                         free(monster);
                     } else {
-                        printf("Voce tenta escapar, tentativa falha \n\n");
+                        printf("Você tenta escapar, tentativa falha \n\n");
                         system("pause");
                         vezPlayer = 1;
                     }
@@ -482,6 +481,7 @@ void novoSave() { //Menu exibido apenas na criação de um novo save
         }
     }
 
+    system("cls");
     dialogo("Após uma longa viagem", 0);
     dialogo("Você chega até a base da Cursed Seed", 0);
     dialogo("estranhante, não tem ninguem na base", 0);
@@ -771,17 +771,17 @@ int acaoCura(int poderAgente, int dadoCura, int peAtual, int gastoPe) {//calcula
             }
             if (cura > (agente.atri.pvMAX - agente.atri.pv)){
                 cura = agente.atri.pvMAX - agente.atri.pv;
-                printf("Voce se curou! \n");
+                printf("Você se curou! \n");
                 printf("vida restalrada: %d \n", cura);
                 system("pause");
                 return cura;
             }else{
-                printf("Voce se curou! \n");
+                printf("Você se curou! \n");
                 printf("vida restalrada: %d \n", cura);
                 system("pause");
                 return cura;
             }
-            printf("Voce se curou! \n");
+            printf("Você se curou! \n");
             printf("vida restalrada: %d \n", cura);
             system("pause");
             return cura;
@@ -805,7 +805,8 @@ void eventoMorteAgente() {
         getch();
         printf("Você percebe...\n");
         getch();
-        printf("Você sucumbiu ao paranormal\n");
+        dialogo("Você sucumbiu ao paranormal",0);
+        printf("\n");
         getch();
         agente.contaMortes++;
     }
@@ -814,7 +815,8 @@ void eventoMorteAgente() {
         getch();
         printf("Só se passa uma coisa...\n");
         getch();
-        printf("Você sucumbiu ao paranormal\n");
+        dialogo("Você sucumbiu ao paranormal",0);
+        printf("\n");
         getch();
         agente.contaMortes++;
     }
@@ -823,7 +825,8 @@ void eventoMorteAgente() {
         getch();
         printf("Agora já é tarde...\n");
         getch();
-        printf("Você sucumbiu ao paranormal\n");
+        dialogo("Você sucumbiu ao paranormal",0);
+        printf("\n");
         getch();
         agente.contaMortes++;
     }
@@ -832,12 +835,14 @@ void eventoMorteAgente() {
         getch();
         printf("Sempre foi...\n");
         getch();
-        printf("Você sucumbiu ao paranormal\n");
+        dialogo("Você sucumbiu ao paranormal",0);
+        printf("\n");
         getch();
         agente.contaMortes++;
     }
     else if(agente.contaMortes>3){
-        printf("Você sucumbiu ao paranormal\n");
+        dialogo("Você sucumbiu ao paranormal",0);
+        printf("\n");
         getch();
         agente.contaMortes++;
     }
@@ -921,7 +926,7 @@ void menuBase() {
                 transcender();
                 break;
                 case 4:
-                printf("Voce descansou o maximo que conseguiu\n");
+                printf("Você descansou o maximo que conseguiu\n");
                 printf("Todos os atributos foram restaurados\n");
                 agente.atri.pv = agente.atri.pvMAX;
                 agente.atri.pe = agente.atri.pod * 5;
@@ -933,7 +938,6 @@ void menuBase() {
                 getch();
                 if (confirmOption(0)!=0){
                     mainBase = 1;
-                    eventoBatalha();
                 }
                 break;
             }
@@ -1332,12 +1336,47 @@ void agenteMenu (struct player *agente){ //exibe o menu do agente
                 carregarJogo(agente);
                 break;
                 case 4:
-                salvarJogo(&agente);
+                salvarJogo(agente);
                 break;
                 case 5:
                 agenteMenu = 1;
                 break;
             }
         }
+    }
+}
+
+void investigacao(){
+    system("cls");
+    dialogo("Você chega no local da missão, uma manssão completamente abandonada e aparentemente vazia",0);
+    dialogo("Você sente ar muito denso e espesso",0);
+    dialogo("Assim que aproxima da porta, você sente algo",0);
+    dialogo("Quando você menos espera, ao entrar na massão...",0);
+    
+    eventoBatalha();
+
+    if (agente.exp > 0 && agente.atri.lvl == 1){
+    system("cls");
+    dialogo("???: nada mal para uma primeira missão",0);
+    dialogo("???: Vai ter tanta sorte na proxima?",0);
+    dialogo("???: ...",0);
+    dialogo("Um completo silêncio toma o local",0);
+    dialogo("Você retorna para a base...",0);
+
+    system("cls");
+    dialogo("???: Vai ter tanta sorte na proxima?",0);
+    dialogo("???: ...",0);
+    dialogo("Um completo silêncio toma o local",0);
+    dialogo("Você retorna para a base...",0);
+
+    system("cls");
+    dialogo("Srta. Rodrigues: Pelo visto voltou vivo, ótimo!",0);
+    dialogo("Vejo que é um agente mais forte que pensei.", 0);
+    dialogo("Sempre que concluir missões serão concedidas recompensas a você", 0);
+    dialogo("tanto em experiência quanto dinheiro", 0);
+    dialogo("Logo, mais missões vão aparecer, até lá você pode continuar treinando e melhorando seu nivel de agente", 0);
+
+    system("cls");
+    dialogo("fim do modo historia(por enquanto)",0);
     }
 }
