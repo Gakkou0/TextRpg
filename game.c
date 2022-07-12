@@ -1364,12 +1364,6 @@ void investigacao(){
     dialogo("Você retorna para a base...",0);
 
     system("cls");
-    dialogo("???: Vai ter tanta sorte na proxima?",0);
-    dialogo("???: ...",0);
-    dialogo("Um completo silêncio toma o local",0);
-    dialogo("Você retorna para a base...",0);
-
-    system("cls");
     dialogo("Srta. Rodrigues: Pelo visto voltou vivo, ótimo!",0);
     dialogo("Vejo que é um agente mais forte que pensei.", 0);
     dialogo("Sempre que concluir missões serão concedidas recompensas a você", 0);
