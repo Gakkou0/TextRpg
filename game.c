@@ -65,7 +65,6 @@ int main (){
     }else{
         menuBase();    
     }
-    investigacao();
 
     return 0;
 }
@@ -937,7 +936,7 @@ void menuBase() {
                 printf("\n Sair da base, significa sair em missão, tem certeza? \n");
                 getch();
                 if (confirmOption(0)!=0){
-                    mainBase = 1;
+                    investigacao();
                 }
                 break;
             }

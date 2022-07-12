@@ -1,15 +1,15 @@
 nome: Gakkou
-vida: 24
-pontos de esforco 25
+vida: 19
+pontos de esforco 19
 vida maxima 24
 sanidade: 35
 nivel: 1
-dinheiro: 2000
+dinheiro: 2286
 força: 1
 destreza: 2
 poder: 5
 constiruição: 3
-xp: 0
+xp: 175
 Aprendeu Ritual 1: 0
 Aprendeu Ritual 2: 1
 Aprendeu Ritual 3: 1
