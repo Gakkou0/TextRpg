@@ -48,9 +48,11 @@ struct item {
     int preco; //valor do item
 }item[4];
 
+int debug = 0;
+
 int main (){
     system("cls");
-
+    
     UINT CPAGE_UTF8 = 65001;
     UINT CPAGE_DEFAULT = GetConsoleOutputCP();
     SetConsoleOutputCP(CPAGE_UTF8);
@@ -58,7 +60,11 @@ int main (){
 
     mainMenu(&agente);
 
-    debugMenu(&agente);
+    if(debug == 1){
+        debugMenu(&agente);
+    }else{
+        menuBase();    
+    }
 
     return 0;
 }
@@ -137,12 +143,12 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
     switch(randMonster) { //Gera o monstro
         case 0:
         strcpy(monster->nome, "Existido de energia");
-        monster->atri.lvl = (rand() % 3) + 1;
+        monster->atri.lvl = (rand() % agente.atri.lvl) + 1;
         monster->atri.des = 3;
         monster->atri.stg = 2;
         monster->atri.con = 3 + monster->atri.lvl;
         monster->atri.pod = 5 + monster->atri.lvl;
-        monster->xpReward = rand() %  100 + /*(100 * monster.atri.lvl)*/ 1000;
+        monster->xpReward = rand() %  100 + (150 * monster->atri.lvl);
         monster->atri.pe = monster->atri.pod * 5;
         monster->coinReward = rand() % (200 - 100) + 200;
         monster->atri.pvMAX = monster->atri.con * 5;
@@ -153,12 +159,12 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         break;
         case 1:
         strcpy(monster->nome, "Zombie de Sangue");
-        monster->atri.lvl = (rand() % 3) + 1;
+        monster->atri.lvl = (rand() % agente.atri.lvl) + 1;
         monster->atri.des = 3;
         monster->atri.stg = 5 + monster->atri.lvl;
         monster->atri.con = 4 + monster->atri.lvl;
         monster->atri.pod = 1;
-        monster->xpReward = rand() %  100 + /*(100 * monster.atri.lvl)*/ 1000;
+        monster->xpReward = rand() %  100 + (150 * monster->atri.lvl);
         monster->atri.pe = monster->atri.pod * 5;
         monster->coinReward = rand() % (200 - 100) + 100;
         monster->atri.pvMAX = monster->atri.con * 5;
@@ -176,7 +182,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         while(vezPlayer==0){
             system("cls");
             printf("Turno: %d \n", turno);
-            printf("Agente: %s \t\t   \t\t %s  \n", agente.nome, monster->nome); 
+            printf("Agente: %s \t\t   \t %s  \n", agente.nome, monster->nome); 
             printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.pv, agente.atri.pvMAX, monster->atri.pv, monster->atri.pvMAX);
             printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.ps, agente.atri.pod * 7, monster->atri.lvl);
             printf("PE: %d / %d \n", agente.atri.pe, agente.atri.pod * 5);
@@ -200,12 +206,14 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
             }else if (c==13) {
                 switch(localReal){
                     case 1:
-                    monster->atri.pv -= movimentoAtaque(agente.atri.stg, 6);
+                    monster->atri.pv = monster->atri.pv - movimentoAtaque(agente.atri.stg, 6);
                     vezPlayer = 1;
                     break;
                     case 2:
                     setRitual();
-                    if (viewRitual(&agente, &monster, agente.rituaisAprendidos)!=0){
+                    int dano = viewRitual(&agente, agente.rituaisAprendidos);
+                    if (dano!=0){
+                        monster->atri.pv = monster->atri.pv - dano;
                         vezPlayer = 1;
                     }
                     break;
@@ -252,7 +260,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
         } while(vezMonstro==0){
             system("cls");
             printf("Turno: %d \n", turno);
-            printf("Agente: %s \t\t   \t\t %s  \n", agente.nome, monster->nome); 
+            printf("Agente: %s \t\t   \t %s  \n", agente.nome, monster->nome); 
             printf("PV: %d / %d \t\t x \t\t PV: %d / %d \n", agente.atri.pv, agente.atri.pvMAX, monster->atri.pv, monster->atri.pvMAX);
             printf("PS: %d / %d \t\t   \t\t LVL: %d \n", agente.ps, agente.atri.pod * 7, monster->atri.lvl);
             printf("PE: %d / %d \n", agente.atri.pe, agente.atri.pod * 5);
@@ -276,20 +284,21 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
     }
 }
 
-void debugMenu(struct player *agente){ //exibe o menu principal
+void debugMenu(struct player *agente){ //exibe o menu de debug
     
     int localReal = 1, debugMenu = 0;
     while(debugMenu == 0){
         system("cls");
-        printf("MENU PRINCIPAL \n \n"); 
+        printf("\n\tMENU DE DEBUG \n \n"); 
 
         printf("\n");
 
         localdaseta(1, localReal);printf("TESTE COMBATE\n");
         localdaseta(2, localReal);printf("STATUS\n");
         localdaseta(3, localReal);printf("ITENS\n");
-        localdaseta(4, localReal);printf("SALVAR\n");
-        localdaseta(5, localReal);printf("TESTE BASE\n");
+        localdaseta(5, localReal);printf("SALVAR\n");
+        localdaseta(6, localReal);printf("TESTE BASE\n");
+        localdaseta(7, localReal);printf("MAIN MENU\n");
         int c = getch();
 
         if(c == 119){
@@ -297,7 +306,7 @@ void debugMenu(struct player *agente){ //exibe o menu principal
                 localReal--;
             }
         } else if (c == 115) {
-            if (localReal < 5) {
+            if (localReal < 7) {
                 localReal++;
             }
         }else if (c==13) {
@@ -313,10 +322,18 @@ void debugMenu(struct player *agente){ //exibe o menu principal
                 viewItemMenu(agente->quantidadeItem);
                 break;
                 case 4:
-                salvarJogo(agente);
+                carregarJogo(agente);
                 break;
                 case 5:
+                salvarJogo(agente);
+                break;
+                case 6:
                 menuBase();
+                break;
+                case 7:
+                mainMenu(&agente);
+                debug = 0;
+                debugMenu = 1;
             }
         }
     }
@@ -327,6 +344,9 @@ int confirmOption(int ph){ //função de confirmação binaria
     while(opcao == 0){
 
         system("cls");
+
+        printf("\n\tDeseja confirmar?\n\n");
+    
         localdaseta(1, localReal);printf("confirmar\n");
         localdaseta(2, localReal);printf("voltar\n");
 
@@ -360,7 +380,20 @@ void novoSave() { //Menu exibido apenas na criação de um novo save
     int deci = 0, localReal = 1, i;
 
     system("cls");
-    printf("Seja Bem vindo Agente, por favor informe como deseja ser chamado: \n");
+    dialogo("O paranormal, não vem para nosso mundo de maneira fácil", 0);
+    dialogo("Uma membrana separa e protege a Realidade do Outro Lado", 0);
+    dialogo("a dimensão dos monstros e demônios.", 0);
+    dialogo("Essa barreira, porém, pode ser enfraquecida pelo Medo.", 0);
+    dialogo("Se aproveitando disso, cultistas fazem rituais para romper a membrana e invocar seres sobrenaturais, causando caos e destruição.", 0);
+    dialogo("Para impedir que esses planos malignos se concretizem", 0);
+    dialogo("organizações de investigadores se mantêm em atividade por todo o globo.", 0);
+    dialogo("Contra o paranormal, esses agentes são nossa primeira e última linha de defesa.", 0);
+    system("cls");
+    dialogo("O nome da organização é cursed seed", 0);
+    dialogo("Você foi convidado a se tornar mais um combatente do paranormal", 0);
+
+    system("cls");
+    printf("Agente, por favor informe como deseja ser chamado: \n");
     printf("Agente: ");
     gets(agente.nome);
 
@@ -448,6 +481,15 @@ void novoSave() { //Menu exibido apenas na criação de um novo save
             }   
         }
     }
+
+    dialogo("Após uma longa viagem", 0);
+    dialogo("Você chega até a base da Cursed Seed", 0);
+    dialogo("estranhante, não tem ninguem na base", 0);
+    dialogo("Ao que parece, todos os agentes estão em missões", 0);
+    system("cls");
+    dialogo("Srta. Rodrigues: Seja bem vindo agente, sugiro que se prepare bem", 0);
+    dialogo("Sua primeira missão está proxima", 0);
+    dialogo("Mas por enquanto, por que não anda pela base?", 0);
 }
 
 void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
@@ -471,6 +513,7 @@ void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
         localdaseta(2, localReal);printf("CARREGAR\n");
         localdaseta(3, localReal);printf("CREDITOS\n");
         localdaseta(4, localReal);printf("SAIR\n");
+        localdaseta(5, localReal);printf("\n");
         int c = getch();
 
         if(c == 119){
@@ -481,6 +524,10 @@ void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
             if (localReal < 4) {
                 localReal++;
             }
+        }else if (c==100){
+            localReal=5;
+        }else if (c==97){
+            localReal=1;
         }else if (c==13) {
             switch(localReal){
                 case 1:
@@ -505,6 +552,12 @@ void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
                 case 4:
                 exit(0);
                 break;
+                case 5:
+                carregarJogo(agente);
+                debug=1;
+                mainMenu=1;
+                break;
+
             }
         }
     }
@@ -591,7 +644,7 @@ ritual[2].tipo = 2;
 ritual[2].gastoPe = 2;
 }
 
-int viewRitual(struct player *agente, monstro *monster, int rituais[]) {
+int viewRitual(struct player *agente, int rituais[]) {
     int localReal = 1, rituMenu = 0, i;
     char opcao[3][30];
     
@@ -651,10 +704,10 @@ int viewRitual(struct player *agente, monstro *monster, int rituais[]) {
                     printf("Ritual não aprendido\n\n");
                     system("pause");
                 }else{ 
-                    monster->atri.pv -= movimentoAtaque(agente->atri.pod, ritual[2].dado);
+                    int dano = movimentoAtaque(agente->atri.pod, ritual[2].dado);
                     agente->atri.pe -= ritual[2].gastoPe;
                     rituMenu = 1;
-                    return 1;
+                    return dano;
                 }
                 break;
                 case 4:
@@ -837,14 +890,15 @@ void menuBase() {
     int localReal = 1, mainBase = 0;
     while(mainBase == 0){
         system("cls");
-        printf("CURSED SEED \n\n"); 
+        printf("\n\tCURSED SEED \n\n"); 
 
         printf("\n");
 
-        localdaseta(1, localReal);printf("LOJA\n");
-        localdaseta(2, localReal);printf("TRANSCENDER\n");
-        localdaseta(3, localReal);printf("DESCANSO\n");
-        localdaseta(4, localReal);printf("SAIR DA BASE\n");
+        localdaseta(1, localReal);printf("AGENTE\n");
+        localdaseta(2, localReal);printf("LOJA\n");
+        localdaseta(3, localReal);printf("TRANSCENDER\n");
+        localdaseta(4, localReal);printf("DESCANSO\n");
+        localdaseta(5, localReal);printf("SAIR DA BASE\n");
         int c = getch();
 
         if(c == 119){
@@ -852,18 +906,21 @@ void menuBase() {
                 localReal--;
             }
         } else if (c == 115) {
-            if (localReal < 4) {
+            if (localReal < 5) {
                 localReal++;
             }
         }else if (c==13) {
             switch(localReal){
                 case 1:
-                viewLoja ();
+                agenteMenu(&agente);
                 break;
                 case 2:
-                transcender();
+                viewLoja ();
                 break;
                 case 3:
+                transcender();
+                break;
+                case 4:
                 printf("Voce descansou o maximo que conseguiu\n");
                 printf("Todos os atributos foram restaurados\n");
                 agente.atri.pv = agente.atri.pvMAX;
@@ -871,8 +928,13 @@ void menuBase() {
                 agente.ps = agente.atri.pod * 7;
                 salvarJogo(&agente);
                 break;
-                case 4:
-                mainBase = 1;
+                case 5:
+                printf("\n Sair da base, significa sair em missão, tem certeza? \n");
+                getch();
+                if (confirmOption(0)!=0){
+                    mainBase = 1;
+                    eventoBatalha();
+                }
                 break;
             }
         }
@@ -1203,6 +1265,77 @@ void viewItemMenu(int quantItem[]) {
                 case 4:
                 return 0;
                 itemMenu = 1;
+                break;
+            }
+        }
+    }
+}
+
+void dialogo(char text[], int seconds)
+{   
+    int x; double y;
+    // Adicionar delay de x segundos
+    sleep(seconds);
+    
+        // Mostrar o texto
+        for(x=0; text[x]!=NULL; x++)
+        {
+        printf("%c",text[x]);
+        for(y=0; y<=8888888; y++)
+        {
+        }
+        }
+
+    char enter = 0;
+    while (enter != '\r' && enter != '\n')
+    {
+        enter = getchar();
+    }
+    
+    // Limpar console
+}
+
+void agenteMenu (struct player *agente){ //exibe o menu do agente
+    
+    int localReal = 1, agenteMenu = 0;
+    while(agenteMenu == 0){
+        system("cls");
+        printf("\n\tMENU DO AGENTE \n \n"); 
+
+        printf("\n");
+
+        localdaseta(1, localReal);printf("STATUS\n");
+        localdaseta(2, localReal);printf("ITENS\n");
+        localdaseta(3, localReal);printf("CARREGAR\n");
+        localdaseta(4, localReal);printf("SALVAR\n");
+        localdaseta(5, localReal);printf("VOLTAR\n");
+        int c = getch();
+
+        if(c == 119){
+            if (localReal > 1) {
+                localReal--;
+            }
+        } else if (c == 115) {
+            if (localReal < 7) {
+                localReal++;
+            }
+        }else if (c==13) {
+            switch(localReal){
+                case 1:
+                agenteStatus();
+                break;
+                case 2:
+                setItem();
+                viewItemMenu(agente->quantidadeItem);
+                break;
+                case 3:
+                carregarJogo(agente);
+                break;
+                case 4:
+                salvarJogo(&agente);
+                break;
+                case 5:
+                agenteMenu = 1;
                 break;
             }
         }
