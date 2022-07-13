@@ -545,8 +545,9 @@ void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
                 case 3:
                 system("cls");
                 printf("---------CREDITOS---------\n\n");
-                printf("Desenvolvedor: Hugo Rodrigues\n");
-                //vejo depois
+                printf("Hugo Rodrigues\n");
+                printf("Mabel Frota\n");
+                printf("Ianny Gabriely\n");
                 system("pause");
                 break;
                 case 4:
@@ -1295,8 +1296,6 @@ void dialogo(char text[], int seconds)
     {
         enter = getchar();
     }
-    
-    // Limpar console
 }
 
 void agenteMenu (struct player *agente){ //exibe o menu do agente
