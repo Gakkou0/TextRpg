@@ -201,7 +201,7 @@ void eventoBatalha(){ //Gera o um monstro de nivel de 1 a 3, exibe e controla o 
                 if (localReal < 4) {
                     localReal++;
                 }
-            }else if (c==13) {
+            }else if (c == 13) {
                 switch(localReal){
                     case 1:
                     monster->atri.pv = monster->atri.pv - movimentoAtaque(agente.atri.stg, 6);
@@ -1058,7 +1058,7 @@ void viewLoja (){
                     printf("saldo abaixo do valor\n");
                     system("pause");
                 }else{
-                    agente.quantidadeItem[2] += 2;
+                    agente.quantidadeItem[2] += 1;
                     agente.coin -= 200;
                     printf("Item comprado\n");
                     system("pause");
@@ -1069,7 +1069,7 @@ void viewLoja (){
                     printf("saldo abaixo do valor\n");
                     system("pause");
                 }else{
-                    agente.quantidadeItem[3] += 2;
+                    agente.quantidadeItem[3] += 1;
                     agente.coin -= 300;
                     printf("Item comprado\n");
                     system("pause");
