@@ -294,6 +294,7 @@ void debugMenu(struct player *agente){ //exibe o menu de debug
         localdaseta(1, localReal);printf("TESTE COMBATE\n");
         localdaseta(2, localReal);printf("STATUS\n");
         localdaseta(3, localReal);printf("ITENS\n");
+        localdaseta(4, localReal);printf("CARREGAR\n");
         localdaseta(5, localReal);printf("SALVAR\n");
         localdaseta(6, localReal);printf("TESTE BASE\n");
         localdaseta(7, localReal);printf("MAIN MENU\n");
