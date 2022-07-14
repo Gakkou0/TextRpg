@@ -1,10 +1,10 @@
-# Rpg Textual - Cursed (provisório)
+# Rpg Textual - Cursed
 
   Rpg textual desenvolvido utilizando a linguagem C para o trabalho final na disciplina de FUP, ministrada pelo professor Arnaldo.
 
 ### Status
 
-  Em desenvolvimento
+  Todas as mecânicas principais finalizadas.
 
 ### Inspiração
 
