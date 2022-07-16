@@ -1,10 +1,11 @@
 # Rpg Textual - Cursed
 
   Rpg textual desenvolvido utilizando a linguagem C para o trabalho final na disciplina de FUP, ministrada pelo professor Arnaldo.
+  
 
 ### Status
 
-  Todas as mecânicas principais finalizadas.
+  Todas as mecânicas principais finalizadas!
 
 ### Inspiração
 
