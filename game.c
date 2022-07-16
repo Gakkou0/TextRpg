@@ -497,12 +497,12 @@ void mainMenu(struct player *agente) {//exibe o primeiro menu do jogo
     while(mainMenu == 0){
         system("cls");
         
-        printf("  _____                        _ \n");
-        printf(" / ____|                      | |\n");
-        printf("| |    _   _ _ __ ___  ___  __| |\n");
-        printf("| |   | | | | '__/ __|/ _ || _` |\n");
-        printf("| |___| |_| | |  |__ |  __/|(_| |\n");
-        printf(" |_____|__,_|_|  |___/|___||__,_|\n");
+        printf("  _____                         _ \n");
+        printf(" / ____|                       | |\n");
+        printf("| |    _   _ _ __ ___  ___   __| |\n");
+        printf("| |   | | | | '__/ __|/ _ |/  _` |\n");
+        printf("| |___| |_| | |  |__ |  __/| (_| |\n");
+        printf(" |_____|__,_|_|  |___/|___|| __,_|\n");
                                         
                                         
 
@@ -896,7 +896,7 @@ void menuBase() {
     int localReal = 1, mainBase = 0;
     while(mainBase == 0){
         system("cls");
-        printf("\n\tCURSED SEED \n\n"); 
+        printf("\n\t\nCURSED SEED \n\n"); 
 
         printf("\n");
 
@@ -1286,7 +1286,7 @@ void dialogo(char text[], int seconds)
         for(x=0; text[x]!=NULL; x++)
         {
         printf("%c",text[x]);
-        for(y=0; y<=888888; y++)
+        for(y=0; y<=899999; y++)
         {
         }
         }
